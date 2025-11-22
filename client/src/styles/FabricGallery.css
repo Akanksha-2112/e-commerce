@@ -1,0 +1,132 @@
+.fabric-gallery {
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: #fff;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* Category Filter */
+.category-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Fabrics Grid */
+.fabrics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.fabric-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: grab;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.fabric-card:active {
+  cursor: grabbing;
+  opacity: 0.7;
+}
+
+.fabric-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.fabric-image-container {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.fabric-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.fabric-card:hover .fabric-image-container img {
+  transform: scale(1.05);
+}
+
+.drag-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.fabric-card:hover .drag-indicator {
+  opacity: 1;
+}
+
+.fabric-info {
+  padding: 12px;
+}
+
+.fabric-info h4 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.fabric-category {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.fabric-description {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}

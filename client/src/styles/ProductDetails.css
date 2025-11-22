@@ -1,0 +1,145 @@
+/* Container for the entire product details page */
+.product-detail-page {
+  padding: 2rem;
+  background: #fff;
+  min-height: 80vh;
+}
+
+/* Main section: split image and details */
+.product-detail-container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-images img {
+  max-width: 320px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.product-details {
+  max-width: 420px;
+  flex: 1;
+}
+
+.product-details h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.product-details .price {
+  font-size: 1.4rem;
+  color: #e74c3c;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.product-details .description {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.product-options {
+  margin-bottom: 1rem;
+}
+
+.size-selector,
+.color-selector,
+.quantity-selector {
+  margin-bottom: 0.75rem;
+}
+
+.size-buttons,
+.color-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.size-buttons button,
+.color-buttons button {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.size-buttons button.active {
+  border-color: #e74c3c;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.color-buttons button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #eee;
+}
+
+.color-buttons button.active {
+  border-color: #e74c3c;
+  box-shadow: 0 0 4px #e74c3c88;
+}
+
+.quantity-selector input[type="number"] {
+  width: 56px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+
+.add-to-cart-btn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 1rem;
+  transition: background 0.18s;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #c0392b;
+}
+
+.message {
+  margin-top: 1rem;
+  color: green;
+  font-weight: 500;
+  background: #eef9ee;
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+
+.product-meta {
+  margin-top: 1rem;
+  font-size: 0.98rem;
+  color: #444;
+}
+
+.product-meta p {
+  margin: 0.3em 0;
+}
+
+@media (max-width: 850px) {
+  .product-detail-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .product-images img {
+    max-width: 100%;
+  }
+}

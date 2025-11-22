@@ -1,0 +1,246 @@
+/* Image Gallery Sections */
+.image-gallery-section {
+  padding: 25px 0;
+  margin: 15px 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.gallery-grid-2 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease;
+  max-height: 150px;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  filter: grayscale(20%);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+  filter: grayscale(0%);
+}
+
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  padding: 8px 6px;
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+  transform: translateY(0);
+}
+
+.gallery-overlay h3 {
+  font-size: 0.75rem;
+  font-family: 'Georgia', serif;
+  margin-bottom: 2px;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+.gallery-overlay p {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.3px;
+}
+
+/* Featured Products Section */
+.featured-section {
+  padding: 30px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.featured-section h2 {
+  font-size: 1.8rem;
+  font-family: 'Georgia', serif;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.featured-item {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.featured-item:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.featured-image {
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  max-height: 140px;
+}
+
+.featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  filter: grayscale(30%);
+}
+
+.featured-item:hover .featured-image img {
+  transform: scale(1.05);
+  filter: grayscale(0%);
+}
+
+.featured-info {
+  padding: 8px;
+  text-align: center;
+}
+
+.featured-info h4 {
+  font-size: 0.75rem;
+  font-family: 'Georgia', serif;
+  margin-bottom: 3px;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+.featured-category {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* Responsive Design for Image Galleries */
+@media (max-width: 1024px) {
+  .gallery-grid,
+  .gallery-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 350px;
+  }
+  
+  .gallery-item {
+    max-height: 180px;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 450px;
+  }
+  
+  .featured-image {
+    max-height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-grid,
+  .gallery-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 320px;
+    gap: 6px;
+  }
+  
+  .gallery-item {
+    max-height: 160px;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 320px;
+  }
+  
+  .featured-image {
+    max-height: 160px;
+  }
+  
+  .image-gallery-section {
+    padding: 20px 0;
+  }
+  
+  .gallery-overlay {
+    transform: translateY(0);
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    padding: 6px 5px;
+  }
+  
+  .gallery-overlay h3 {
+    font-size: 0.7rem;
+  }
+  
+  .gallery-overlay p {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-grid,
+  .gallery-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+    gap: 5px;
+  }
+  
+  .gallery-item {
+    max-height: 140px;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+    gap: 6px;
+  }
+  
+  .featured-image {
+    max-height: 140px;
+  }
+  
+  .featured-info {
+    padding: 6px;
+  }
+  
+  .featured-info h4 {
+    font-size: 0.7rem;
+  }
+  
+  .featured-category {
+    font-size: 0.55rem;
+  }
+}

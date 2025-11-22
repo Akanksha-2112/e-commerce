@@ -1,0 +1,5 @@
+/* Placeholder for Home page styles */
+.home-page { padding: 2rem; }
+.category-cards { display: flex; gap: 1rem; }
+.category-card { border: 1px solid #ddd; padding: 1rem; width: 150px; text-align: center; }
+.product-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
