@@ -7,8 +7,9 @@ import logo from '../assets/logo.png';
 import '../styles/LandingPage.css';
 
 const categories = {
-  Men: ['Shirts', 'Pants', 'Suits'],
-  Women: ['Dresses', 'Tops', 'Lehenga', 'Saree'],
+  Women: ['Dresses', 'Tops', 'Lehenga', 'Saree', 'Fabrics'],
+  Men: ['Shirts', 'Pants', 'Suits', 'Fabrics'],
+  Kids: ['T-Shirts', 'Shorts', 'Frocks', 'Fabrics'],
 };
 
 const LandingPage = () => {
@@ -16,8 +17,6 @@ const LandingPage = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Only show curtain on first visit, not when navigating back
   const [showCurtain, setShowCurtain] = useState(() => {
     const hasSeenCurtain = sessionStorage.getItem('hasSeenCurtain');
     return !hasSeenCurtain;
@@ -30,14 +29,10 @@ const LandingPage = () => {
 
   return (
     <>
-      {/* Curtain Intro */}
       {showCurtain && <CurtainIntro onComplete={handleCurtainComplete} />}
-
       <div className="landing-page-main">
         <header className="main-header">
-          <img src={logo} alt="AWIK Fashion" className="main-logo" />
-
-          {/* Hamburger */}
+          {/* Hamburger Button */}
           <button
             className="hamburger"
             aria-label="Open Navigation"
@@ -47,20 +42,32 @@ const LandingPage = () => {
             <span />
             <span />
           </button>
-
+          {/* Logo */}
+          <img src={logo} alt="AWIK Fashion" className="main-logo" />
+          {/* Nav */}
           <nav className={`main-nav ${menuOpen ? 'active' : ''}`}>
             <ul>
-              <li onClick={() => navigate('/design/lehenga')}>Lehenga</li>
-              <li onClick={() => navigate('/design/dresses')}>Dresses</li>
-              <li onClick={() => navigate('/design/tops')}>Tops</li>
+              {Object.keys(categories).map((cat) => (
+                <li key={cat}>
+                  {cat}
+                  <ul className="submenu">
+                    {categories[cat].map(item => (
+                      <li key={item} onClick={() =>
+                        navigate(item.toLowerCase() === 'fabrics' ? `/${cat.toLowerCase()}/fabrics` : `/design/${item.toLowerCase()}`)}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
             </ul>
           </nav>
+          {/* Auth Btns */}
           <div className="header-actions">
             <button className="auth-btn" onClick={() => setShowSignIn(true)}>Sign In</button>
             <button className="auth-btn accent" onClick={() => setShowSignUp(true)}>Sign Up</button>
           </div>
         </header>
-        
         <main className="main-content">
           <section className="hero-block">
             <h1 className="hero-title">Elevate Your Style</h1>
@@ -69,16 +76,23 @@ const LandingPage = () => {
             </p>
             <button className="main-cta" onClick={() => navigate('/design/lehenga')}>View Catalogue</button>
           </section>
-
           <section className="featured-collections">
             <h2>Our Signature Collections</h2>
             <div className="collections-grid">
-              {Object.keys(categories).map((category) => (
+              {Object.keys(categories).map(category => (
                 <div className="collection-card" key={category}>
                   <h3>{category}</h3>
                   <ul>
-                    {categories[category].map((item) => (
-                      <li key={item} onClick={() => navigate(`/design/${item.toLowerCase()}`)}>{item}</li>
+                    {categories[category].map(item => (
+                      <li
+                        key={item}
+                        onClick={() =>
+                          navigate(item.toLowerCase() === 'fabrics'
+                            ? `/${category.toLowerCase()}/fabrics`
+                            : `/design/${item.toLowerCase()}`
+                          )
+                        }
+                      >{item}</li>
                     ))}
                   </ul>
                 </div>
@@ -86,16 +100,13 @@ const LandingPage = () => {
             </div>
           </section>
         </main>
-
         <footer className="main-footer">
           <p>&copy; 2025 AWIK Fashion. All rights reserved.</p>
         </footer>
       </div>
-
-      {showSignIn && <SignIn onClose={() => setShowSignIn(false)} />}
-      {showSignUp && <SignUp onClose={() => setShowSignUp(false)} />}
+      {showSignIn && <SignIn onClose={() => setShowSignIn(false)} onSwitchToSignUp={() => { setShowSignIn(false); setShowSignUp(true); }} />}
+      {showSignUp && <SignUp onClose={() => setShowSignUp(false)} onSwitchToSignIn={() => { setShowSignUp(false); setShowSignIn(true); }} />}
     </>
   );
 };
-
 export default LandingPage;

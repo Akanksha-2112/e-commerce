@@ -1,37 +1,72 @@
-import React, { useState } from 'react';
-import SignIn from '../components/auth/SignIn';
-import SignUp from '../components/auth/SignUp';
-import '../styles/LandingPage.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { FiUser, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import '../styles/HomePage.css';
 
-const LandingPage = () => {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+const navItems = [
+  { label: 'MEN', path: '/men' },
+  { label: 'WOMEN', path: '/women' },
+  { label: 'KIDS', path: '/kids' },
+  { label: 'HOME', path: '/home' },
+  { label: 'BEAUTY', path: '/beauty' },
+  { label: 'GENZ', path: '/genz' },
+  { label: 'STUDIO', path: '/studio', new: true }
+];
+
+const actionIcons = [
+  { icon: <FiUser />, label: 'Profile', path: '/profile' },
+  { icon: <FiHeart />, label: 'Wishlist', path: '/wishlist' },
+  { icon: <FiShoppingBag />, label: 'Bag', path: '/cart' }
+];
+
+const HomePage = () => {
+  const navigate = useNavigate();
 
   return (
-    <div 
-      className="landing-page" 
-      style={{ 
-        minHeight: '100vh', 
-        backgroundImage: `url(${logo})`, 
-        backgroundSize: 'contain', 
-        backgroundPosition: 'center', 
-        backgroundRepeat: 'no-repeat',
-        backgroundColor: '#ADD8E6' // light blue fallback color
-      }}
-    >
-      <header className="landing-header">
-        <div className="auth-buttons" style={{position: 'absolute', top: 20, right: 20}}>
-          <button onClick={() => setShowSignIn(true)} className="btn-signin">Sign In</button>
-          <button onClick={() => setShowSignUp(true)} className="btn-signup">Sign Up</button>
+    <div className="hp-navbar-root">
+      <div className="hp-navbar-main">
+        {/* Logo */}
+        <img src={logo} alt="AWIK Spectrum" className="hp-navbar-logo" />
+
+        {/* Horizontal Menu */}
+        <ul className="hp-navbar-menu">
+          {navItems.map(item => (
+            <li key={item.label} onClick={() => navigate(item.path)}>
+              {item.label}
+              {item.new && <span className="hp-navbar-badge">NEW</span>}
+            </li>
+          ))}
+        </ul>
+
+        {/* Search */}
+        <input
+          className="hp-navbar-search"
+          placeholder="Search for products, brands and more"
+        />
+
+        {/* Profile, Wishlist, Bag */}
+        <div className="hp-navbar-actions">
+          {actionIcons.map(a => (
+            <div
+              key={a.label}
+              className="hp-navbar-action"
+              onClick={() => navigate(a.path)}
+            >
+              {a.icon}
+              <span>{a.label}</span>
+            </div>
+          ))}
         </div>
-      </header>
+      </div>
 
-      {/* Your landing page content goes here */}
-
-      {showSignIn && <SignIn onClose={() => setShowSignIn(false)} onSwitchToSignUp={() => { setShowSignIn(false); setShowSignUp(true); }} />}
-      {showSignUp && <SignUp onClose={() => setShowSignUp(false)} onSwitchToSignIn={() => { setShowSignUp(false); setShowSignIn(true); }} />}
+      {/* Banner (edit or remove as you wish) */}
+      <div className="hp-navbar-banner">
+        <b>FLAT ₹300 OFF</b>
+        <span className="hp-navbar-offer-detail">On Your 1<sup>st</sup> Purchase</span>
+      </div>
     </div>
   );
 };
-export default LandingPage;
+
+export default HomePage;
