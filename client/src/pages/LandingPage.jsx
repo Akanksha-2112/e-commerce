@@ -32,37 +32,40 @@ const LandingPage = () => {
       {showCurtain && <CurtainIntro onComplete={handleCurtainComplete} />}
       <div className="landing-page-main">
         <header className="main-header">
-          {/* Hamburger Button */}
+          {/* Hamburger menu button */}
           <button
             className="hamburger"
             aria-label="Open Navigation"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            <span />
-            <span />
-            <span />
+            <span /><span /><span />
           </button>
           {/* Logo */}
           <img src={logo} alt="AWIK Fashion" className="main-logo" />
-          {/* Nav */}
+          {/* Responsive main nav */}
           <nav className={`main-nav ${menuOpen ? 'active' : ''}`}>
             <ul>
-              {Object.keys(categories).map((cat) => (
+              {Object.keys(categories).map(cat => (
                 <li key={cat}>
                   {cat}
                   <ul className="submenu">
                     {categories[cat].map(item => (
-                      <li key={item} onClick={() =>
-                        navigate(item.toLowerCase() === 'fabrics' ? `/${cat.toLowerCase()}/fabrics` : `/design/${item.toLowerCase()}`)}>
-                        {item}
-                      </li>
+                      <li
+                        key={item}
+                        onClick={() =>
+                          navigate(item.toLowerCase() === 'fabrics'
+                            ? `/${cat.toLowerCase()}/fabrics`
+                            : `/design/${item.toLowerCase()}`
+                          )
+                        }
+                      >{item}</li>
                     ))}
                   </ul>
                 </li>
               ))}
             </ul>
           </nav>
-          {/* Auth Btns */}
+          {/* Sign buttons */}
           <div className="header-actions">
             <button className="auth-btn" onClick={() => setShowSignIn(true)}>Sign In</button>
             <button className="auth-btn accent" onClick={() => setShowSignUp(true)}>Sign Up</button>
@@ -74,7 +77,9 @@ const LandingPage = () => {
             <p className="hero-desc">
               Discover the new era of fashion with exquisite ethnic and contemporary collections, designed for those who demand luxury and authenticity.
             </p>
-            <button className="main-cta" onClick={() => navigate('/design/lehenga')}>View Catalogue</button>
+            <button className="main-cta" onClick={() => navigate('/design/lehenga')}>
+              View Catalogue
+            </button>
           </section>
           <section className="featured-collections">
             <h2>Our Signature Collections</h2>
@@ -109,4 +114,5 @@ const LandingPage = () => {
     </>
   );
 };
+
 export default LandingPage;

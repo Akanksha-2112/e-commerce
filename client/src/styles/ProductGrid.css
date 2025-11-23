@@ -1,35 +1,40 @@
 .product-grid-section {
   margin-top: 40px;
+  margin-bottom: 64px;
 }
 .product-grid-section h2 {
   text-align: center;
   color: #ffe5e5;
   font-size: 2rem;
   margin-bottom: 30px;
+  font-family: 'Georgia', serif;
 }
+
 .product-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 32px;
   justify-content: center;
 }
+
 .product-card {
   background: #220010e9;
   border-radius: 14px;
-  width: 280px;
-  overflow: hidden;
-  padding: 0 0 18px 0;
-  box-shadow: 0 2px 16px rgba(128,0,32,0.1);
+  width: 290px;
+  box-shadow: 0 2px 16px rgba(128,0,32,0.13);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: box-shadow 0.21s, transform 0.2s;
+  padding: 0 0 20px 0;
+  transition: box-shadow 0.2s, transform 0.18s;
   position: relative;
 }
+
 .product-card:hover {
   box-shadow: 0 8px 40px #80002033;
   transform: translateY(-6px) scale(1.03);
 }
+
 .product-image {
   width: 100%;
   height: 250px;
@@ -38,47 +43,57 @@
   border-top-right-radius: 14px;
   background: #fff;
 }
+
 .product-title {
-  font-size: 1.18rem;
+  font-size: 1.19rem;
   color: #ffd700;
   font-weight: 600;
   margin: 18px 0 8px 0;
   text-align: center;
+  font-family: 'Georgia', serif;
 }
+
 .product-desc {
   color: #eed3eb;
-  font-size: 0.99rem;
+  font-size: 1rem;
   text-align: center;
-  margin: 0 10px 14px 10px;
+  margin: 0 12px 14px 12px;
   min-height: 38px;
 }
+
 .product-meta {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 13px;
-  margin-bottom: 8px;
+  gap: 14px;
+  margin-bottom: 7px;
 }
+
 .product-price {
   color: #d4af37;
   font-size: 1.09rem;
   font-weight: bold;
 }
+
 .wishlist-btn {
   background: none;
   border: none;
   cursor: pointer;
   color: #ff9aa2;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   padding: 3px;
-  transition: color 0.21s;
-  margin-left: 6px;
+  transition: color 0.18s;
+  margin-left: 8px;
+  position: relative;
 }
 .wished {
   color: #e32267;
+  font-weight: bold;
 }
+
+/* Add to cart button styling */
 .cart-btn {
-  margin-top: 1px;
+  margin-top: 1.5px;
   display: flex;
   align-items: center;
   background: linear-gradient(90deg, #d4af37 0%, #800020 100%);
@@ -89,8 +104,25 @@
   padding: 8px 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.13s;
+  transition: background 0.21s, transform 0.12s;
+  box-shadow: 0 2px 8px #80002026;
 }
+
 .cart-btn:active {
   background: linear-gradient(90deg, #800020 0%, #d4af37 100%);
+}
+
+/* Responsive styles */
+@media (max-width: 800px) {
+  .product-grid {
+    gap: 15px;
+  }
+  .product-card {
+    width: 90vw;
+    min-width: 0;
+    max-width: 310px;
+  }
+  .product-image {
+    height: 170px;
+  }
 }
