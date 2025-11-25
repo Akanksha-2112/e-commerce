@@ -1,58 +1,45 @@
-import React, { useState } from 'react';
-import { FiHeart, FiShoppingBag } from 'react-icons/fi';
-import lehengaImg from '../assets/products/lehenga1.jpg'; // Replace with your image path!
-import '../styles/ProductGrid.css';
+import React from "react";
+import lehenga1 from "../assets/products/lehenga1.jpg";
+import lehenga2 from "../assets/products/lehenga2.jpg";
+// Add more imports if you have other lehenga images
+import "./LehengaPage.css";
 
-// Example Lehenga products; add more if you wish
-const products = [
+const lehengaProducts = [
   {
     id: 1,
-    name: 'AWIK Designer Lehenga',
-    image: lehengaImg,
-    desc: 'Handcrafted with traditional patterns and embellishments.',
-    price: 6999,
+    name: "Floral Lehenga",
+    description: "Hand-embroidered, elegant chiffon with floral motifs.",
+    price: "₹2,899",
+    image: lehenga1, // Use imported variable, not string
   },
-  // Add more lehenga objects as needed
+  {
+    id: 2,
+    name: "Party Lehenga",
+    description: "Sequinned georgette, luxurious festive design.",
+    price: "₹3,299",
+    image: lehenga2,
+  },
+  // Add more products if you have more images, using same style
 ];
 
-const LehengaPage = () => {
-  const [wishlist, setWishlist] = useState({});
-  const [cart, setCart] = useState({});
-
-  const toggleWishlist = id =>
-    setWishlist(prev => ({ ...prev, [id]: !prev[id] }));
-
-  const addToCart = id =>
-    setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
-
+function LehengaPage() {
   return (
-    <div className="product-grid-section">
-      <h2>Lehenga Collection</h2>
-      <div className="product-grid">
-        {products.map(product => (
-          <div className="product-card" key={product.id}>
+    <main className="product-grid">
+      <h2 className="category-title">Lehenga Collection</h2>
+      <div className="products-wrap">
+        {lehengaProducts.map(product => (
+          <div key={product.id} className="product-card">
             <img src={product.image} alt={product.name} className="product-image" />
-            <h3 className="product-title">{product.name}</h3>
-            <div className="product-desc">{product.desc}</div>
-            <div className="product-meta">
-              <span className="product-price">₹{product.price}</span>
-              <button
-                className={`wishlist-btn ${wishlist[product.id] ? 'wished' : ''}`}
-                onClick={() => toggleWishlist(product.id)}
-                aria-label="Toggle wishlist"
-              >
-                <FiHeart />
-              </button>
-            </div>
-            <button className="cart-btn" onClick={() => addToCart(product.id)}>
-              <FiShoppingBag style={{ marginRight: '8px' }} />
-              {cart[product.id] ? 'In Cart' : 'Add to Cart'}
-            </button>
+            <h4 className="product-title">{product.name}</h4>
+            <p className="product-desc">{product.description}</p>
+            <div className="product-price">{product.price}</div>
+            <button className="wishlist-btn">&#9825;</button>
+            <button className="cart-btn">Add to Cart</button>
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
-};
+}
 
 export default LehengaPage;
