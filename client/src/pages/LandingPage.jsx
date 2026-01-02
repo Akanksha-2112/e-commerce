@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import {
   FaBars, FaTimes, FaChevronDown, FaChevronUp,
   FaRegUser, FaRegHeart, FaShoppingBag, FaSearch
@@ -201,6 +202,7 @@ const PRODUCT_DATA = {
 };
 
 function LandingPage() {
+  const { user } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState(""); // "MEN" | "WOMEN" | "KIDS"
   const [kidsSub, setKidsSub] = useState(""); // "Boys" | "Girls"
@@ -244,10 +246,17 @@ function LandingPage() {
               placeholder="Search for products, brands and more"
             />
           </div>
-          <a href="/profile" className="icon-box">
-            <FaRegUser className="navbar-icon" />
-            <span>Profile</span>
-          </a>
+          {user ? (
+            <a href="/profile" className="icon-box">
+              <FaRegUser className="navbar-icon" />
+              <span>{user.name ? user.name.split(' ')[0] : 'Profile'}</span>
+            </a>
+          ) : (
+            <a href="/login" className="icon-box">
+              <FaRegUser className="navbar-icon" />
+              <span>Login</span>
+            </a>
+          )}
           <a href="/wishlist" className="icon-box">
             <FaRegHeart className="navbar-icon" />
             <span>Wishlist</span>

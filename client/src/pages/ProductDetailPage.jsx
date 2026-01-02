@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { ProductContext } from '../context/ProductContext';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import '../styles/ProductDetails.css';
 
 const ProductDetailPage = () => {
@@ -15,6 +16,7 @@ const ProductDetailPage = () => {
 
   const { fetchProductById } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
+  const { addToRecentlyViewed } = useContext(AuthContext);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -22,9 +24,14 @@ const ProductDetailPage = () => {
       setProduct(data);
       if (data?.sizes?.length > 0) setSelectedSize(data.sizes[0]);
       if (data?.colors?.length > 0) setSelectedColor(data.colors[0]);
+
+      // Add to recently viewed
+      if (data) {
+        addToRecentlyViewed(id);
+      }
     };
     loadProduct();
-  }, [id]);
+  }, [id, addToRecentlyViewed]);
 
   const handleAddToCart = async () => {
     if (!selectedSize || !selectedColor) {
@@ -46,7 +53,7 @@ const ProductDetailPage = () => {
   return (
     <div className="product-detail-page">
       <Navbar />
-      
+
       <div className="product-detail-container">
         <div className="product-images">
           <img src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} />

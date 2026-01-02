@@ -32,4 +32,4 @@ const cartSchema = new mongoose.Schema({
   }
 });
 
-export default mongoose.model('Cart', cartSchema);
+export default mongoose.models.Cart || mongoose.model('Cart', cartSchema);
