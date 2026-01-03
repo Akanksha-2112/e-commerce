@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Montserrat:wght@200;300;400&family=Libre+Bodoni:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --sovereign-charcoal: #0a0a0a;
+    --sovereign-gold: #D4AF37;
+    --sovereign-white-gold: #F2E8C9;
+    --sovereign-glass-bg: rgba(10, 10, 10, 0.6);
+    --sovereign-glass-border: rgba(212, 175, 55, 0.4);
+    --font-regal: 'Libre Bodoni', 'Cormorant Garamond', serif;
+    /* Updated to Bodoni */
+    --font-minimal: 'Montserrat', sans-serif;
+    --motion-elite: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Heavy, expensive motion */
+}
+
+.monolith-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--sovereign-charcoal);
+    color: var(--sovereign-white-gold);
+    overflow: hidden;
+    cursor: none;
+    font-family: var(--font-minimal);
+}
+
+.monolith-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/images/raw_silk_bg.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+    z-index: 1;
+    transform: scale(1.05);
+    /* Slight scale for slow zoom effect if animated later */
+    transition: transform 10s ease-out, filter var(--motion-elite);
+    animation: breathe 8s ease-in-out infinite alternate;
+    /* Living background effect */
+}
+
+@keyframes breathe {
+    0% {
+        filter: brightness(0.8) contrast(1.1);
+        transform: scale(1.05);
+    }
+
+    100% {
+        filter: brightness(1.0) contrast(1.2);
+        transform: scale(1.08);
+    }
+}
+
+.monolith-content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Glass Panel styles */
+.obsidian-glass-panel {
+    background: rgba(5, 5, 5, 0.75);
+    /* Darker 'Smoked' opacity */
+    backdrop-filter: blur(40px);
+    /* Heavier blur */
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid transparent;
+    border-image: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.8), rgba(212, 175, 55, 0.2)) 1;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+    padding: 6rem 8rem;
+    /* More architectural presence */
+    position: relative;
+    /* Animated liquid border effect via pseudo-element */
+}
+
+.obsidian-glass-panel::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent);
+    background-size: 200% 100%;
+    animation: liquidBorder 4s linear infinite;
+    z-index: -1;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    padding: 1px;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+@keyframes liquidBorder {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+
+
+/* Typography */
+.monolith-technical-header {
+    font-family: var(--font-minimal);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(242, 232, 201, 0.6);
+    margin-bottom: 2rem;
+}
+
+.monolith-headline {
+    font-family: var(--font-regal);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    /* Increased spacing for authority */
+    line-height: 1.1;
+    margin: 0 0 2rem 0;
+    color: var(--sovereign-white-gold);
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+}
+
+/* CTA Button */
+.monolith-cta {
+    position: relative;
+    padding: 1.2rem 3rem;
+    background: transparent;
+    border: 1px solid var(--sovereign-glass-border);
+    color: var(--sovereign-gold);
+    font-family: var(--font-minimal);
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    margin-top: 1rem;
+}
+
+.monolith-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/images/liquid_gold.png');
+    background-size: cover;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.5s ease;
+}
+
+.monolith-cta:hover {
+    border-color: transparent;
+    color: #050505;
+    background-color: var(--sovereign-gold);
+}
+
+.monolith-cta:hover::before {
+    opacity: 1;
+}
+
+/* Intro Overlay */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--sovereign-charcoal);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    animation: introFadeOut 1s ease-in-out 3.5s forwards;
+    pointer-events: none;
+}
+
+.intro-content {
+    text-align: center;
+    opacity: 0;
+    animation: introContentFade 2.5s ease-in-out 0.5s forwards;
+}
+
+.intro-logo-img {
+    height: 280px;
+    /* Significantly increased size */
+    width: auto;
+    margin-bottom: 2rem;
+    object-fit: contain;
+    border-radius: 0;
+}
+
+.intro-tagline {
+    font-family: var(--font-minimal);
+    font-size: 0.8rem;
+    letter-spacing: 0.4em;
+    color: rgba(242, 232, 201, 0.6);
+    text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes introFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes introContentFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    20% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    80% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+}
+
+/* Navigation */
+.monolith-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2.5rem 2rem;
+    /* Reduced from 4rem to move logo left */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+}
+
+.monolith-logo-img {
+    height: 110px;
+    /* Much larger visibility */
+    width: auto;
+    object-fit: contain;
+    cursor: none;
+    transition: transform var(--motion-elite), filter var(--motion-elite);
+    border-radius: 0;
+    position: relative;
+}
+
+.monolith-logo-img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+    /* Liquid Gold Shimmer simulation via filter brightness pump */
+}
+
+.monolith-nav-btn {
+    font-family: var(--font-minimal);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(242, 232, 201, 0.7);
+    background: none;
+    border: none;
+    cursor: none;
+    transition: color 0.3s ease;
+}
+
+.monolith-nav-btn:hover {
+    color: var(--sovereign-white-gold);
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    /* Gold cursor */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+    mix-blend-mode: normal;
+    /* Changed from difference to better suit the dark/gold theme */
+}
+
+.custom-cursor.hovered {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: var(--sovereign-gold);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

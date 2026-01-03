@@ -333,7 +333,7 @@ const ProfilePage = () => {
                             </div>
 
                             <nav className="nav-section">
-                                <NavLink tab="dashboard" icon={FaChartLine} label="Dashboard" />
+                                <NavLink tab="dashboard" icon={FaChartLine} label="Command Center" />
                                 <NavLink tab="profile" icon={FaUser} label="My Profile" />
                                 <NavLink tab="orders" icon={FaBoxOpen} label="Orders" />
                                 <NavLink tab="wishlist" icon={FaHeart} label="Wishlist" />
@@ -365,11 +365,11 @@ const ProfilePage = () => {
                                 {/* DASHBOARD TAB */}
                                 {activeTab === 'dashboard' && (
                                     <motion.div key="dashboard" variants={contentVariants} initial="hidden" animate="visible" exit="exit">
-                                        <h2 className="section-title">Overview</h2>
+                                        <h2 className="section-title">Vault Status</h2>
                                         <div className="dashboard-grid">
                                             {[
                                                 { label: 'Total Orders', value: stats?.totalOrders || 0, icon: FaBoxOpen },
-                                                { label: 'Total Spent', value: `₹${stats?.totalSpent || 0}`, icon: FaShoppingBag },
+                                                { label: 'Collection Value', value: `₹${stats?.totalSpent || 0}`, icon: FaShoppingBag },
                                                 { label: 'In Wishlist', value: stats?.wishlistCount || 0, icon: FaHeart }
                                             ].map((stat, idx) => (
                                                 <div key={idx} className="stat-card">

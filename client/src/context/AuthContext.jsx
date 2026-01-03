@@ -10,33 +10,48 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for tokens in URL (OAuth redirect)
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const userStr = params.get('user');
+    const handleAuth = async () => {
+      // Check for tokens in URL (OAuth redirect)
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const userStr = params.get('user');
 
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(decodeURIComponent(userStr));
-        // Add token to user object for storage
-        const userData = { ...user, token };
+      if (token) {
+        try {
+          let userData;
+          if (userStr) {
+            // Case A: User data passed via URL
+            const parsedUser = JSON.parse(decodeURIComponent(userStr));
+            userData = { ...parsedUser, token };
+          } else {
+            // Case B: Only token passed, fetch user profile
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+            userData = { ...data, token };
+          }
 
-        setUser(userData);
-        localStorage.setItem('userInfo', JSON.stringify(userData));
+          setUser(userData);
+          localStorage.setItem('userInfo', JSON.stringify(userData));
 
-        // Clean up URL
-        window.history.replaceState({}, document.title, "/");
-      } catch (error) {
-        console.error('Error parsing user data from URL', error);
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+
+          // Redirect to Command Center
+          navigate('/sarees');
+        } catch (error) {
+          console.error('Error parsing user data from URL', error);
+        }
+      } else {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+          setUser(JSON.parse(userInfo));
+        }
       }
-    } else {
-      const userInfo = localStorage.getItem('userInfo');
-      if (userInfo) {
-        setUser(JSON.parse(userInfo));
-      }
-    }
-    setLoading(false);
-  }, []);
+      setLoading(false);
+    };
+
+    handleAuth();
+  }, [navigate]);
 
   const register = async (name, email, password) => {
     try {
@@ -45,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/');
+      navigate('/sarees');
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Registration failed' };
@@ -80,7 +95,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/');
+      navigate('/sarees');
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Invalid Code' };

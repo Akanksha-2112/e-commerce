@@ -44,7 +44,7 @@ const SignIn = () => {
       setIsLoading(false);
       if (result.success) {
         if (result.type === 'token') {
-          navigate('/');
+          navigate('/sarees');
         } else {
           setAuthStage('2fa');
           setTwoFactorCode(['', '', '', '', '', '']); // Clear for fresh input

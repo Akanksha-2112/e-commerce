@@ -1,52 +1,103 @@
-import React, { useState } from 'react';
-import sareeImg from '../assets/products/saree1.jpg'; // Use your image
-import { FiHeart, FiShoppingBag } from 'react-icons/fi';
-import '../styles/ProductGrid.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import ArchiveCard from '../components/common/ArchiveCard';
+import sareeImg from '../assets/products/saree1.jpg';
+import '../styles/PrivateArchive.css';
+
+// Mock Data with "Masterpiece" and Grid Items
+const masterpiece = {
+  id: 'master',
+  name: 'The Royal Banarasi Heirloom',
+  image: sareeImg, // In real app, use a high-res hero version
+  origin: '19th Century Weave Revival'
+};
 
 const products = [
   {
     id: 1,
-    name: 'AWIK Festive Saree',
+    name: 'Crimson Gold Katan',
     image: sareeImg,
-    desc: 'Elegant golden woven saree, perfect for festive occasions.',
-    price: 2999,
+    origin: 'Banaras Hand-Loom',
+    price: 450000,
+    span: 'tall'
   },
-  // ...add more saree products if needed
+  {
+    id: 2,
+    name: 'Midnight Silk Organza',
+    image: sareeImg,
+    origin: 'Chanderi Weave',
+    price: 285000,
+    span: 'wide'
+  },
+  {
+    id: 3,
+    name: 'Ivory Zari Georgette',
+    image: sareeImg,
+    origin: 'Mysore Silk',
+    price: 150000,
+    span: 'medium'
+  },
+  {
+    id: 4,
+    name: 'Emerald Brocade',
+    image: sareeImg,
+    origin: 'Kanchipuram',
+    price: 320000,
+    span: 'medium'
+  },
+  {
+    id: 5,
+    name: 'Obsidian Gold Tissue',
+    image: sareeImg,
+    origin: 'Uppada Silk',
+    price: 550000,
+    span: 'wide'
+  }
 ];
 
 const SareePage = () => {
-  const [wishlist, setWishlist] = useState({});
-  const [cart, setCart] = useState({});
-
-  const toggleWishlist = id => setWishlist(prev => ({ ...prev, [id]: !prev[id] }));
-  const addToCart = id => setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  const navigate = useNavigate();
 
   return (
-    <div className="product-grid-section">
-      <h2>Saree Collection</h2>
-      <div className="product-grid">
+    <div className="private-archive-container">
+
+      {/* Profile Button */}
+      <button
+        className="archive-profile-btn"
+        onClick={() => navigate('/profile')}
+        title="Command Center"
+      >
+        <FaUser size={20} />
+      </button>
+
+      {/* Masterpiece Hero */}
+      <section className="archive-hero">
+        <div className="masterpiece-frame">
+          <img src={masterpiece.image} alt={masterpiece.name} className="masterpiece-image" />
+          <h1 className="masterpiece-title">{masterpiece.name}</h1>
+        </div>
+      </section>
+
+      {/* Elite Filter Bar */}
+      <div className="archive-filters">
+        <div className="filter-group">
+          <span className="filter-link active">Refine Collection</span>
+          <span className="filter-link">Filter by Weave</span>
+          <span className="filter-link">Sort by Era</span>
+        </div>
+        <div className="filter-group">
+          <span className="filter-link">View Latest Manifestations</span>
+        </div>
+      </div>
+
+      {/* Asymmetrical "Gallery" Grid */}
+      <div className="archive-grid">
         {products.map(product => (
-          <div className="product-card" key={product.id}>
-            <img src={product.image} alt={product.name} className="product-image" />
-            <h3 className="product-title">{product.name}</h3>
-            <div className="product-desc">{product.desc}</div>
-            <div className="product-meta">
-              <span className="product-price">₹{product.price}</span>
-              <button
-                className={`wishlist-btn ${wishlist[product.id] ? 'wished' : ''}`}
-                onClick={() => toggleWishlist(product.id)}
-                aria-label="Toggle wishlist"
-              >
-                <FiHeart />
-              </button>
-            </div>
-            <button className="cart-btn" onClick={() => addToCart(product.id)}>
-              <FiShoppingBag style={{ marginRight: '8px' }} />
-              {cart[product.id] ? 'In Cart' : 'Add to Cart'}
-            </button>
-          </div>
+          <ArchiveCard key={product.id} product={product} span={product.span} />
         ))}
       </div>
+
     </div>
   );
 };

@@ -4,8 +4,10 @@ import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import ResetPassword from "./components/auth/ResetPassword";
 import VerifyEmail from "./components/auth/VerifyEmail";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./components/landing/LandingPage";
 import ProfilePage from "./pages/ProfilePage";
+import InquiryConfirmed from "./pages/InquiryConfirmed";
+import SareePage from "./pages/SareePage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/inquiry-confirmed" element={<InquiryConfirmed />} />
+          <Route path="/sarees" element={<SareePage />} />
         </Routes>
       </AuthProvider>
     </Router>

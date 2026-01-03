@@ -1,0 +1,292 @@
+/* Private Archive - Deep Obsidian Theme */
+.private-archive-container {
+    background-color: #050505;
+    /* Matte Black / Deep Obsidian */
+    min-height: 100vh;
+    color: #e5e5e5;
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 5rem;
+    position: relative;
+    /* Context for absolute positioning */
+}
+
+/* Profile / Command Center Button */
+.archive-profile-btn {
+    position: absolute;
+    top: 2rem;
+    right: 3rem;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #F2E8C9;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.archive-profile-btn:hover {
+    border-color: #D4AF37;
+    color: #D4AF37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+    transform: scale(1.05);
+}
+
+/* Masterpiece Hero Section */
+.archive-hero {
+    height: 80vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 4rem;
+}
+
+.masterpiece-frame {
+    width: 90%;
+    height: 90%;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 10, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.masterpiece-image {
+    max-height: 90%;
+    max-width: 90%;
+    object-fit: cover;
+    filter: brightness(0.9) contrast(1.1);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.archive-hero:hover .masterpiece-image {
+    transform: scale(1.02);
+    filter: brightness(1);
+}
+
+.masterpiece-title {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    z-index: 10;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Elite Filter Bar */
+.archive-filters {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    gap: 2rem;
+}
+
+.filter-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.filter-link:hover,
+.filter-link.active {
+    color: #D4AF37;
+}
+
+/* Asymmetrical Grid */
+.archive-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+    /* Space between cards */
+    padding: 0 4rem;
+    /* Horizontal padding */
+}
+
+/* Individual Archive Card Wrapper - Spanning Logic */
+.archive-cell {
+    position: relative;
+    /* Default span */
+    grid-column: span 4;
+    aspect-ratio: 3/4;
+}
+
+.archive-cell.wide {
+    grid-column: span 6;
+    aspect-ratio: 16/9;
+}
+
+.archive-cell.tall {
+    grid-column: span 3;
+    aspect-ratio: 9/16;
+}
+
+/* Archive Card Component */
+.archive-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    /* Smoked Obsidian */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: none;
+    /* Custom cursor */
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.archive-card:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    /* Liquid Gold Border */
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* Image Container & Reveal */
+.card-image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    /* Hidden initially for reveal */
+    animation: fadeInImage 1s forwards 0.5s;
+    /* Delay for curtain */
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.archive-card:hover .card-image {
+    transform: scale(1.2);
+    /* Macro Zoom */
+}
+
+/* Curator Info Panel (Hidden until hover) */
+.card-info-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 5;
+}
+
+.archive-card:hover .card-info-panel {
+    transform: translateY(0);
+}
+
+.artisanal-origin {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 0;
+}
+
+.price-tag {
+    font-family: 'Courier New', Courier, monospace;
+    /* Monospaced */
+    font-size: 0.9rem;
+    color: #D4AF37;
+    /* Gold */
+    margin-top: 0.5rem;
+}
+
+/* Origin Ledger Icon (Web3 Provenance) */
+.origin-ledger-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.archive-card:hover .origin-ledger-icon {
+    opacity: 1;
+}
+
+/* Curtain Reveal Animation */
+.curtain-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    z-index: 10;
+    animation: curtainDown 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+.curtain-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes curtainDown {
+    0% {
+        height: 100%;
+    }
+
+    100% {
+        height: 0%;
+    }
+}
+
+@keyframes fadeInImage {
+    to {
+        opacity: 1;
+    }
+}

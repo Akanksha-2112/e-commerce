@@ -49,8 +49,10 @@ const SignUp = () => {
           setError(result.message || "Registration signal rejected.");
           setIsLoading(false);
         } else {
-          // Success -> Redirect is usually handled by auth listener, but we can set stage
-          setSignupStage('success');
+          // Success -> Redirect to Elite Success Screen
+          // Note: result.success doesn't return user object in register() in AuthContext based on previous read, 
+          // but we have the 'name' state variable here.
+          navigate('/inquiry-confirmed', { state: { name: name } });
         }
       } catch (err) {
         setError("Vault Creation Failed.");
