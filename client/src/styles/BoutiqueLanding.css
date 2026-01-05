@@ -1,0 +1,289 @@
+/* BoutiqueLanding.css */
+
+:root {
+    --boutique-bg: #FAF9F6;
+    /* Off-White */
+    --boutique-text: #1A1A1A;
+    /* Charcoal */
+    --boutique-gold: #D4AF37;
+    --boutique-border: #E5E5E5;
+    --boutique-font-serif: 'Playfair Display', serif;
+    --boutique-font-sans: 'Inter', sans-serif;
+}
+
+.boutique-container {
+    min-height: 100vh;
+    background-color: var(--boutique-bg);
+    color: var(--boutique-text);
+    padding: 2rem;
+    padding-top: 8rem;
+    /* Space for fixed header */
+    font-family: var(--boutique-font-sans);
+    opacity: 0;
+    animation: fadeInPage 1.2s ease-out forwards;
+}
+
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.boutique-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Boutique Header */
+.boutique-header {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.boutique-pre-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.boutique-headline {
+    font-family: var(--boutique-font-serif);
+    font-size: 3.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    letter-spacing: -0.01em;
+}
+
+.boutique-divider {
+    width: 60px;
+    height: 1px;
+    background-color: var(--boutique-text);
+    margin: 0 auto 2rem;
+}
+
+/* Featured Grid */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+}
+
+.collection-card {
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.collection-card:hover {
+    transform: translateY(-10px);
+}
+
+.card-image-box {
+    width: 100%;
+    aspect-ratio: 0.75;
+    background-color: #f0f0f0;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s ease;
+}
+
+.collection-card:hover .card-img {
+    transform: scale(1.05);
+}
+
+.card-info {
+    text-align: center;
+}
+
+.card-brand {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.card-name {
+    font-family: var(--boutique-font-serif);
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.card-price {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 1rem;
+}
+
+.add-to-bag-btn {
+    background: transparent;
+    border: 1px solid var(--boutique-text);
+    color: var(--boutique-text);
+    padding: 0.8rem 2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.collection-card:hover .add-to-bag-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.add-to-bag-btn:hover {
+    background: var(--boutique-text);
+    color: #fff;
+}
+
+/* Stagger Effects handled in JS or simplified here */
+.collection-card:nth-child(1) {
+    animation: slideUp 0.8s ease-out 0.2s backwards;
+}
+
+.collection-card:nth-child(2) {
+    animation: slideUp 0.8s ease-out 0.4s backwards;
+}
+
+.collection-card:nth-child(3) {
+    animation: slideUp 0.8s ease-out 0.6s backwards;
+}
+
+.collection-card:nth-child(4) {
+    animation: slideUp 0.8s ease-out 0.8s backwards;
+}
+
+.collection-card:nth-child(5) {
+    animation: slideUp 0.8s ease-out 1.0s backwards;
+}
+
+.collection-card:nth-child(6) {
+    animation: slideUp 0.8s ease-out 1.2s backwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .collection-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .boutique-headline {
+        font-size: 2.5rem;
+    }
+
+    .collection-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Navigation Overrides for Light Theme --- */
+.boutique-container .menu-line {
+    background-color: var(--boutique-text) !important;
+}
+
+.boutique-container .greeting-container {
+    color: var(--boutique-text) !important;
+}
+
+.boutique-container .header-logo {
+    filter: invert(1) brightness(0);
+    /* Make logo black if it was white/gold */
+}
+
+/* --- Sovereign Tabs --- */
+.sovereign-tabs-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+    /* Aligned with Logo/Menu */
+    z-index: 40;
+    /* Below Logo/Profile but above content */
+    pointer-events: none;
+    /* Let clicks pass through container to body if miss */
+}
+
+.sovereign-tabs {
+    display: flex;
+    gap: 3rem;
+    pointer-events: auto;
+    /* Re-enable clicks on tabs */
+}
+
+.sovereign-tab {
+    background: transparent;
+    border: none;
+    font-family: var(--boutique-font-serif);
+    /* Serif for elegance */
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: #999;
+    /* Muted by default */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.sovereign-tab:hover {
+    color: var(--boutique-text);
+}
+
+.sovereign-tab.active {
+    color: var(--boutique-text);
+}
+
+.sovereign-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--boutique-text);
+    transform: scaleX(1);
+    transition: transform 0.3s ease;
+}
+
+/* Media Query Adjustment */
+@media (max-width: 900px) {
+    .sovereign-tabs {
+        display: none;
+        /* Hide on mobile/tablet for now or move to sidebar */
+    }
+}

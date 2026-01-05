@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png'; // Adjust path if your structure is different
 
 const Navbar = () => {
@@ -20,8 +21,8 @@ const Navbar = () => {
         </div>
       </div>
       <div className="auth-buttons">
-        <button>Sign In</button>
-        <button>Sign Up</button>
+        <Link to="/login"><button>Sign In</button></Link>
+        <Link to="/register"><button>Sign Up</button></Link>
       </div>
     </nav>
   );

@@ -1,0 +1,174 @@
+/* Product Command Page - Deep Obsidian Theme */
+.product-command-container {
+    background-color: #050505;
+    /* Matte Black */
+    min-height: 100vh;
+    width: 100vw;
+    color: #e5e5e5;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    overflow-x: hidden;
+}
+
+/* Split Layout */
+.command-visual-panel {
+    flex: 6;
+    /* 60% Width */
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+.command-data-panel {
+    flex: 4;
+    /* 40% Width */
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.95);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 4rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+/* Visual Panel Imagery */
+.command-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.9) contrast(1.1);
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.command-visual-panel:hover .command-hero-image {
+    transform: scale(1.03);
+}
+
+/* Header Typography */
+.command-breadcrumbs {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.command-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: #fff;
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+}
+
+.command-price {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.5rem;
+    color: #D4AF37;
+    /* Liquid Gold */
+    margin-bottom: 3rem;
+    display: block;
+}
+
+/* Provenance Ledger (Timeline) */
+.provenance-ledger {
+    margin: 3rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ledger-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+}
+
+.ledger-label {
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.ledger-value {
+    color: #e5e5e5;
+}
+
+/* Artisanal Story */
+.command-story {
+    font-family: 'Playfair Display', serif;
+    /* Use serif for reading text */
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #bbb;
+    margin-bottom: 4rem;
+    font-style: italic;
+}
+
+/* Action Area */
+.command-actions {
+    margin-top: auto;
+}
+
+.reserve-btn {
+    width: 100%;
+    padding: 1.5rem;
+    background: transparent;
+    border: 1px solid #D4AF37;
+    color: #D4AF37;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.reserve-btn:hover {
+    background: #D4AF37;
+    color: #000;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.reserve-hint {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .product-command-container {
+        flex-direction: column;
+    }
+
+    .command-visual-panel,
+    .command-data-panel {
+        flex: none;
+        width: 100%;
+        height: auto;
+    }
+
+    .command-visual-panel {
+        height: 60vh;
+    }
+
+    .command-data-panel {
+        padding: 2rem;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+}

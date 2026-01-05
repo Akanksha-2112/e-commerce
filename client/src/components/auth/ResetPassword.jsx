@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import '../../styles/LuxuryAuth.css';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -58,193 +58,108 @@ const ResetPassword = () => {
         }
     };
 
-    const containerVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.6, ease: "easeOut" }
-        }
-    };
-
     return (
-        <div style={{
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#f8fafc',
-            fontFamily: "'Outfit', sans-serif",
-            overflow: 'hidden',
-        }}>
-            {/* Abstract Background */}
-            <div style={{
-                position: 'absolute',
-                top: '-20%',
-                right: '-10%',
-                width: '600px',
-                height: '600px',
-                background: 'radial-gradient(circle, rgba(255, 125, 64, 0.05) 0%, transparent 70%)',
-                borderRadius: '50%',
-                zIndex: 0
-            }} />
-
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                style={{
-                    width: '90%',
-                    maxWidth: '450px',
-                    background: '#FFFFFF',
-                    borderRadius: '24px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
-                    padding: '40px',
-                    position: 'relative',
-                    zIndex: 1
-                }}
-            >
-                <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                    <div style={{
-                        width: '60px',
-                        height: '60px',
-                        background: '#FFF1EB',
-                        borderRadius: '50%',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '20px'
-                    }}>
-                        <FaLock size={24} color="#FF7D40" />
-                    </div>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b', marginBottom: '10px' }}>Reset Password</h2>
-                    <p style={{ color: '#64748b' }}>Enter your new password below.</p>
+        <div className="luxury-auth-container">
+            {/* Left Side - Image */}
+            <div className="luxury-auth-image" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop')" }}>
+                <div className="luxury-image-overlay"></div>
+                <div className="luxury-quote">
+                    "Elegance is the only beauty that never fades."
                 </div>
+            </div>
 
-                {error && (
-                    <div style={{
-                        padding: '12px', background: '#FEF2F2', color: '#EF4444',
-                        borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px',
-                        textAlign: 'center'
-                    }}>
-                        {error}
+            {/* Right Side - Form */}
+            <div className="luxury-auth-form-container">
+                <div className="luxury-auth-content">
+                    <div className="luxury-header">
+                        <div className="luxury-icon-circle">
+                            <FaLock size={20} color="#D4AF37" />
+                        </div>
+                        <h2 className="luxury-title">Reset Password</h2>
+                        <p className="luxury-subtitle">Enter your new credentials below.</p>
                     </div>
-                )}
 
-                {message && (
-                    <div style={{
-                        padding: '12px', background: '#F0FDF4', color: '#166534',
-                        borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px',
-                        textAlign: 'center'
-                    }}>
-                        {message}
-                    </div>
-                )}
+                    {error && <div className="luxury-global-error">{error}</div>}
+                    {message && <div style={{
+                        padding: '1rem',
+                        background: 'rgba(212, 175, 55, 0.1)',
+                        color: '#D4AF37',
+                        marginBottom: '2rem',
+                        textAlign: 'center',
+                        border: '1px solid #D4AF37'
+                    }}>{message}</div>}
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', color: '#475569', marginBottom: '8px' }}>New Password</label>
-                        <div style={{ position: 'relative' }}>
+                    <form onSubmit={handleSubmit} className="luxury-form">
+                        <div className="luxury-input-wrapper">
                             <input
                                 type={showPassword ? "text" : "password"}
+                                className="luxury-input"
+                                placeholder="New Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter new password"
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 16px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #e2e8f0',
-                                    background: '#F8FAFC',
-                                    fontSize: '1rem',
-                                    color: '#1e293b',
-                                    outline: 'none'
-                                }}
                                 required
                             />
+                            <label className="luxury-label">New Password</label>
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 style={{
                                     position: 'absolute',
-                                    right: '14px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
+                                    right: '0',
+                                    top: '0.8rem',
                                     background: 'none',
                                     border: 'none',
-                                    color: '#94a3b8',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    color: '#888'
                                 }}
                             >
-                                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                             </button>
                         </div>
-                    </div>
 
-                    <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', color: '#475569', marginBottom: '8px' }}>Confirm Password</label>
-                        <div style={{ position: 'relative' }}>
+                        <div className="luxury-input-wrapper">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
+                                className="luxury-input"
+                                placeholder="Confirm Password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Confirm new password"
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 16px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #e2e8f0',
-                                    background: '#F8FAFC',
-                                    fontSize: '1rem',
-                                    color: '#1e293b',
-                                    outline: 'none'
-                                }}
                                 required
                             />
+                            <label className="luxury-label">Confirm Password</label>
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                 style={{
                                     position: 'absolute',
-                                    right: '14px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
+                                    right: '0',
+                                    top: '0.8rem',
                                     background: 'none',
                                     border: 'none',
-                                    color: '#94a3b8',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    color: '#888'
                                 }}
                             >
-                                {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                             </button>
                         </div>
-                    </div>
 
-                    <motion.button
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        type="submit"
-                        disabled={isLoading}
-                        style={{
-                            width: '100%',
-                            padding: '16px',
-                            borderRadius: '12px',
-                            background: '#FF7D40',
-                            color: 'white',
-                            border: 'none',
-                            fontSize: '1rem',
-                            fontWeight: '700',
-                            cursor: isLoading ? 'not-allowed' : 'pointer',
-                            boxShadow: '0 4px 12px rgba(255, 125, 64, 0.2)',
-                            marginTop: '10px',
-                            opacity: isLoading ? 0.7 : 1
-                        }}
-                    >
-                        {isLoading ? 'Resetting...' : 'Reset Password'}
-                    </motion.button>
-                </form>
-            </motion.div>
+                        <button
+                            type="submit"
+                            className="luxury-button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <span className="spinner"></span> Resetting...
+                                </>
+                            ) : (
+                                'SET NEW PASSWORD'
+                            )}
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 };

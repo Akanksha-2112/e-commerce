@@ -67,7 +67,7 @@ export default function Navbar() {
                         placeholder="Search for products, brands and more"
                     />
                 </div>
-                <Link to={user ? "/profile" : "/entrance"} className="icon-box">
+                <Link to={user ? "/profile" : "/login"} className="icon-box">
                     <FaRegUser className="navbar-icon" />
                     <span>{user ? `Hello, ${user.firstName}` : "Sign In"}</span>
                 </Link>

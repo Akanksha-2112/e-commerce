@@ -9,7 +9,8 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   // Inputs
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -44,15 +45,13 @@ const SignUp = () => {
     // Simulate complex "Identity Verification" delay
     setTimeout(async () => {
       try {
-        const result = await register(name, email, password);
+        const result = await register(firstName, lastName, email, password);
         if (!result.success) {
           setError(result.message || "Registration signal rejected.");
           setIsLoading(false);
         } else {
           // Success -> Redirect to Elite Success Screen
-          // Note: result.success doesn't return user object in register() in AuthContext based on previous read, 
-          // but we have the 'name' state variable here.
-          navigate('/inquiry-confirmed', { state: { name: name } });
+          navigate('/inquiry-confirmed', { state: { name: firstName } });
         }
       } catch (err) {
         setError("Vault Creation Failed.");
@@ -295,13 +294,24 @@ const SignUp = () => {
 
         {/* Middle: Inputs */}
         <form onSubmit={handleInitialSubmit} className="input-stack">
-          <input
-            className="minimal-input"
-            type="text"
-            placeholder="Full Identity Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div style={{ display: 'flex', gap: '15px' }}>
+            <input
+              className="minimal-input"
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              style={{ flex: 1 }}
+            />
+            <input
+              className="minimal-input"
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              style={{ flex: 1 }}
+            />
+          </div>
           <input
             className="minimal-input"
             type="email"

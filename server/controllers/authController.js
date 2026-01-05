@@ -163,6 +163,8 @@ export const verifyLoginOtp = asyncHandler(async (req, res) => {
 
   res.json({
     _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
     name: user.name,
     email: user.email,
     role: user.role,
@@ -183,6 +185,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     res.json({
       _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -224,6 +228,8 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
     res.json({
       _id: updatedUser._id,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
@@ -264,6 +270,8 @@ export const uploadProfilePicture = asyncHandler(async (req, res) => {
 
     res.json({
       _id: updatedUser._id,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,

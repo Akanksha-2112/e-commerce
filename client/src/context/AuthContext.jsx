@@ -44,7 +44,22 @@ export const AuthProvider = ({ children }) => {
       } else {
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
-          setUser(JSON.parse(userInfo));
+          const parsedUser = JSON.parse(userInfo);
+          setUser(parsedUser);
+
+          // Background refresh to get latest data (like firstName) and validate token
+          try {
+            const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
+            const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+            // Preserve the token from local storage or response if it rotates (usually sticks)
+            const updatedData = { ...data, token: parsedUser.token };
+            setUser(updatedData);
+            localStorage.setItem('userInfo', JSON.stringify(updatedData));
+          } catch (error) {
+            console.error('Token invalid or expired', error);
+            // Optional: Logout if token is invalid, but for now just let it be or silent fail
+            // logout();
+          }
         }
       }
       setLoading(false);
@@ -53,10 +68,10 @@ export const AuthProvider = ({ children }) => {
     handleAuth();
   }, [navigate]);
 
-  const register = async (name, email, password) => {
+  const register = async (firstName, lastName, email, password) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password }, config);
+      const { data } = await axios.post('http://localhost:5000/api/auth/register', { firstName, lastName, email, password }, config);
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));

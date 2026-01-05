@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useGlobal } from '../context/GlobalContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import ImageUpload from '../components/common/ImageUpload';
+import SovereignTabs from '../components/common/SovereignTabs';
 import '../styles/ProfilePage.css'; // Import the new Premium CSS
 import {
     FaUser,
@@ -18,7 +20,8 @@ import {
     FaChartLine,
     FaHistory,
     FaShieldAlt,
-    FaLock
+    FaLock,
+    FaStore
 } from 'react-icons/fa';
 
 const ProfilePage = () => {
@@ -35,6 +38,8 @@ const ProfilePage = () => {
         getRecentlyViewed,
         removeFromWishlist
     } = useContext(AuthContext);
+
+    const { toggleSidebar } = useGlobal();
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -318,6 +323,31 @@ const ProfilePage = () => {
                 </div>
             ) : (
                 <div className="profile-page-container">
+
+                    {/* [NEW] Sovereign Navigation Overlay */}
+                    <header className="vertical-header" style={{ position: 'fixed', top: 0, left: 0, zIndex: 60 }}>
+                        <img
+                            src={require('../assets/images/logo.png')}
+                            alt="Logo"
+                            className="header-logo"
+                            onClick={() => navigate('/')}
+                        />
+
+                        <button className="menu-trigger" onClick={() => toggleSidebar(true)}>
+                            <span className="menu-line"></span>
+                            <span className="menu-line"></span>
+                            <span className="menu-line"></span>
+                        </button>
+                    </header>
+
+                    <SovereignTabs />
+
+                    <div className="greeting-container">
+                        <span style={{ cursor: 'default' }}>
+                            Hello, {name.split(' ')[0]}
+                        </span>
+                    </div>
+
                     <div className="profile-content-wrapper">
 
                         {/* Sidebar */}
@@ -347,6 +377,17 @@ const ProfilePage = () => {
                                 <NavLink tab="wishlist" icon={FaHeart} label="Wishlist" />
                                 <NavLink tab="recentlyViewed" icon={FaHistory} label="Recently Viewed" />
                                 <NavLink tab="settings" icon={FaCog} label="Settings" />
+
+                                {/* Divider */}
+                                <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '15px 0' }}></div>
+
+                                <button
+                                    className="nav-link"
+                                    onClick={() => navigate('/')}
+                                    style={{ color: 'var(--luxury-gold)' }}
+                                >
+                                    <FaStore size={18} /> Return to Boutique
+                                </button>
                             </nav>
 
                             <div className="sign-out-section">
