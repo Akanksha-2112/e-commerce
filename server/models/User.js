@@ -3,9 +3,16 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    trim: true
+  },
   name: {
     type: String,
-    required: [true, 'Please provide a name'],
     trim: true
   },
   email: {
@@ -62,6 +69,21 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Order'
   }],
+  cart: [{
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product'
+    },
+    quantity: {
+      type: Number,
+      default: 1
+    },
+    size: String,
+    color: String,
+    price: Number,
+    name: String,
+    image: String
+  }],
   wishlist: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product'
@@ -82,13 +104,22 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+// Sync name field
+userSchema.pre('save', function (next) {
+  if (this.firstName && this.lastName) {
+    this.name = `${this.firstName} ${this.lastName}`;
+  }
+  next();
+});
+
 // Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 // Compare password

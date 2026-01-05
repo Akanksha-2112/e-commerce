@@ -48,7 +48,7 @@ const InquiryConfirmed = () => {
 
                 {/* Acknowledgment */}
                 <p className="acknowledgment-text">
-                    {honorificName}, your credentials have been received and encrypted within our Mumbai studio.
+                    {honorificName}, your credentials have been received and encrypted within our Awik Spectrum Studio.
                 </p>
 
                 {/* Next Steps */}

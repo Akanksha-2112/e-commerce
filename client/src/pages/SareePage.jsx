@@ -1,9 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
-import ArchiveCard from '../components/common/ArchiveCard';
+// import { useNavigate } from 'react-router-dom';
+// import { FaUser } from 'react-icons/fa';
+// import ArchiveCard from '../components/common/ArchiveCard';
+import Navbar from '../components/Navbar';
+import ProductCard from '../components/common/ProductCard';
 import sareeImg from '../assets/products/saree1.jpg';
 import '../styles/PrivateArchive.css';
+import '../styles/PremiumTheme.css';
 
 // Mock Data with "Masterpiece" and Grid Items
 const masterpiece = {
@@ -57,22 +60,14 @@ const products = [
 ];
 
 const SareePage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
-    <div className="private-archive-container">
-
-      {/* Profile Button */}
-      <button
-        className="archive-profile-btn"
-        onClick={() => navigate('/profile')}
-        title="Command Center"
-      >
-        <FaUser size={20} />
-      </button>
+    <div className="private-archive-container" style={{ backgroundColor: '#0a0a0a' }}> {/* Ensure dark background */}
+      <Navbar />
 
       {/* Masterpiece Hero */}
-      <section className="archive-hero">
+      <section className="archive-hero" style={{ marginTop: '80px' }}> {/* Add margin for Navbar */}
         <div className="masterpiece-frame">
           <img src={masterpiece.image} alt={masterpiece.name} className="masterpiece-image" />
           <h1 className="masterpiece-title">{masterpiece.name}</h1>
@@ -91,11 +86,13 @@ const SareePage = () => {
         </div>
       </div>
 
-      {/* Asymmetrical "Gallery" Grid */}
-      <div className="archive-grid">
-        {products.map(product => (
-          <ArchiveCard key={product.id} product={product} span={product.span} />
-        ))}
+      {/* Premium Grid */}
+      <div className="premium-page" style={{ paddingTop: '20px', minHeight: 'auto' }}>
+        <div className="premium-grid-3">
+          {products.map(product => (
+            <ProductCard key={product.id} product={product} currency="₹" />
+          ))}
+        </div>
       </div>
 
     </div>

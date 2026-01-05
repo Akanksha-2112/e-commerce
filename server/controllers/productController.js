@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler';
+import mongoose from 'mongoose';
 import Product from '../models/product.js';
+import Category from '../models/Category.js';
 
 // @desc    Get all products with filters
 // @route   GET /api/products
@@ -9,8 +11,24 @@ export const getProducts = asyncHandler(async (req, res) => {
 
   let query = {};
 
-  if (category) query.category = category;
-  if (subcategory) query.subcategory = subcategory;
+  if (category) {
+    if (mongoose.isValidObjectId(category)) {
+      query.category = category;
+    } else {
+      // Look up category by name (case-insensitive)
+      const categoryDoc = await Category.findOne({ name: { $regex: new RegExp(`^${category}$`, 'i') } });
+      if (categoryDoc) {
+        query.category = categoryDoc._id;
+      } else {
+        // Category name provided but not found -> return empty result
+        return res.json({ success: true, count: 0, products: [] });
+      }
+    }
+  }
+
+  if (subcategory) {
+    query.subcategory = { $regex: new RegExp(`^${subcategory}$`, 'i') };
+  }
   if (size) query.sizes = size;
   if (color) query.colors = color;
 
@@ -54,16 +72,30 @@ export const getProductById = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 export const createProduct = asyncHandler(async (req, res) => {
+  const { name, description, price, category, subcategory, sizes, colors, images, stock, sku } = req.body;
+
+  // Validation
+  if (price <= 0) {
+    res.status(400);
+    throw new Error('Price must be greater than 0');
+  }
+
+  if (stock < 0) {
+    res.status(400);
+    throw new Error('Stock cannot be negative');
+  }
+
   const product = new Product({
-    name: req.body.name,
-    description: req.body.description,
-    price: req.body.price,
-    category: req.body.category,
-    subcategory: req.body.subcategory,
-    sizes: req.body.sizes,
-    colors: req.body.colors,
-    images: req.body.images,
-    stock: req.body.stock
+    name,
+    description,
+    price,
+    category,
+    subcategory,
+    sizes,
+    colors,
+    images,
+    stock,
+    sku
   });
 
   const createdProduct = await product.save();

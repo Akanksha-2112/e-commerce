@@ -191,3 +191,18 @@
     align-items: center;
     justify-content: center;
 }
+.navbar-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-text {
+    font-family: 'Didot', serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: #333;
+}

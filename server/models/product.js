@@ -15,14 +15,20 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Product price is required'],
     min: 0
   },
-  category: {
+  sku: {
     type: String,
-    required: true,
-    enum: ['men', 'women', 'kids']
+    required: [true, 'Product SKU is required'],
+    unique: true,
+    trim: true
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
   },
   subcategory: {
     type: String,
-    required: true
+    required: false
   },
   sizes: [{
     type: String,

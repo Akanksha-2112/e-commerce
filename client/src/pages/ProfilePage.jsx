@@ -70,10 +70,18 @@ const ProfilePage = () => {
         if (!loading && !user) {
             navigate('/login');
         } else if (user) {
-            setName(user.name);
+            // Sanitize name if it contains "undefined"
+            let safeName = user.name;
+            if (safeName && safeName.includes('undefined')) {
+                const safeFirst = (user.firstName && user.firstName !== 'undefined') ? user.firstName : '';
+                const safeLast = (user.lastName && user.lastName !== 'undefined') ? user.lastName : '';
+                safeName = `${safeFirst} ${safeLast}`.trim();
+            }
+            if (!safeName) safeName = "Member";
+
+            setName(safeName);
             setEmail(user.email);
-            setPhone(user.phone || '');
-            setPhone(user.phone || '');
+            setPhone((user.phone && user.phone !== 'undefined') ? user.phone : '');
             setAddress(user.address || { street: '', city: '', state: '', zipCode: '', country: '' });
             setTwoFactorEnabled(user.twoFactorEnabled || false);
 

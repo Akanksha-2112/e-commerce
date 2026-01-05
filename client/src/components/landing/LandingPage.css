@@ -248,86 +248,96 @@
     }
 }
 
-/* Navigation */
-.monolith-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 2.5rem 2rem;
-    /* Reduced from 4rem to move logo left */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 20;
-}
-
-.monolith-logo-img {
-    height: 110px;
-    /* Much larger visibility */
-    width: auto;
-    object-fit: contain;
-    cursor: none;
-    transition: transform var(--motion-elite), filter var(--motion-elite);
-    border-radius: 0;
-    position: relative;
-}
-
-.monolith-logo-img:hover {
-    transform: scale(1.05);
-    filter: brightness(1.2) drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
-    /* Liquid Gold Shimmer simulation via filter brightness pump */
-}
-
-.monolith-nav-btn {
-    font-family: var(--font-minimal);
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(242, 232, 201, 0.7);
-    background: none;
-    border: none;
-    cursor: none;
-    transition: color 0.3s ease;
-}
-
-.monolith-nav-btn:hover {
-    color: var(--sovereign-white-gold);
-}
-
-/* Custom Cursor */
-.custom-cursor {
+/* Vertical Header */
+.vertical-header {
     position: fixed;
     top: 0;
     left: 0;
-    width: 30px;
-    height: 30px;
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    /* Gold cursor */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s, background-color 0.3s;
-    mix-blend-mode: normal;
-    /* Changed from difference to better suit the dark/gold theme */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center menu under logo */
+    z-index: 50;
+    padding: 40px 20px;
+    /* Generous padding as requested */
 }
 
-.custom-cursor.hovered {
-    width: 50px;
-    height: 50px;
-    background-color: rgba(212, 175, 55, 0.1);
-    border-color: var(--sovereign-gold);
+.header-logo {
+    width: 120px;
+    /* Increased size as requested */
+    height: auto;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    /* filter: brightness(0); Removed to keep original colors */
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+.menu-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.menu-line {
+    width: 24px;
+    height: 1px;
+    /* Thin minimalist lines */
+    background-color: #F2E8C9;
+    /* Sovereign White Gold lines */
+    transition: width 0.3s ease;
+}
+
+.menu-trigger:hover .menu-line:nth-child(2) {
+    width: 16px;
+    /* Elegant hover effect */
+}
+
+/* Greeting */
+.greeting-container {
+    position: fixed;
+    top: 40px;
+    right: 60px;
+    z-index: 50;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #F2E8C9;
+    /* Sovereign White Gold Text */
+    letter-spacing: 0.05em;
+}
+
+/* Overrides/Adjustments */
+.monolith-container {
+    padding: 0;
+    cursor: auto;
+    /* Standard Cursor */
+    background-color: var(--sovereign-charcoal);
+    /* Back to Dark Luxury */
+    color: var(--sovereign-white-gold);
+}
+
+/* Ensure background image is visible but overlayed by header */
+.monolith-background {
+    /* Keep animation but maybe lighter overlay? */
+    filter: brightness(0.6);
+    /* Darken image for luxury feel */
+}
+
+.monolith-content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.intro-overlay {
+    background-color: var(--sovereign-charcoal);
+    /* Dark Luxury Intro */
 }

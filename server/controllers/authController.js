@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   // Check if user exists
   const userExists = await User.findOne({ email });
@@ -25,7 +25,9 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   // Create user
   const user = await User.create({
-    name,
+    firstName,
+    lastName,
+    name: `${firstName} ${lastName}`,
     email,
     password
   });
@@ -33,6 +35,8 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(201).json({
       _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -57,8 +61,12 @@ export const loginUser = asyncHandler(async (req, res) => {
   // Find user by email
   const user = await User.findOne({ email }).select('+password');
 
-  if (user && (await user.comparePassword(password))) {
+  if (!user) {
+    res.status(404);
+    throw new Error('AUTH_USER_NOT_FOUND');
+  }
 
+  if (await user.comparePassword(password)) {
     // Check if 2FA is enabled
     if (user.twoFactorEnabled) {
       // Generate 6-digit OTP
@@ -108,6 +116,8 @@ export const loginUser = asyncHandler(async (req, res) => {
       // 2FA Disabled: Login Immediately
       res.json({
         _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
@@ -278,8 +288,12 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(404);
-    throw new Error('No user found with that email');
+    // Security: Do not reveal that the user does not exist
+    // Return success to prevent email enumeration
+    return res.json({
+      success: true,
+      message: 'If an account exists, a secure link has been sent.'
+    });
   }
 
   // Generate reset token
@@ -291,21 +305,39 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   // Send email
   const emailHtml = passwordResetEmail(user, resetUrl);
-  const emailResult = await sendEmail({
-    email: user.email,
-    subject: 'Password Reset Request - AWIK SPECTRUM',
-    html: emailHtml
-  });
 
-  if (!emailResult.success) {
+  try {
+    const emailResult = await sendEmail(
+      user.email,
+      'Password Reset Request - AWIK SPECTRUM',
+      emailHtml
+    );
+
+    if (!emailResult.success) {
+      // Revert token if email fails
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      console.error('Email Service Error:', emailResult.error);
+      res.status(500);
+      throw new Error('Unable to process request. Please contact your private concierge.');
+    }
+
+    res.json({
+      success: true,
+      message: 'Password reset email sent'
+    });
+  } catch (error) {
+    // Revert token if unexpected error
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    console.error('Forgot Password Error:', error);
     res.status(500);
-    throw new Error('Email could not be sent. Please try again later.');
+    throw new Error('Unable to process request. Please contact your private concierge.');
   }
-
-  res.json({
-    success: true,
-    message: 'Password reset email sent'
-  });
 });
 
 // @desc    Reset password

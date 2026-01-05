@@ -1,32 +1,69 @@
 import asyncHandler from 'express-async-handler';
+import Category from '../models/Category.js';
 
 // @desc    Get all categories
 // @route   GET /api/categories
 // @access  Public
 export const getCategories = asyncHandler(async (req, res) => {
-  const categories = [
-    {
-      id: 1,
-      name: 'men',
-      displayName: 'Men',
-      subcategories: ['Shirts', 'Pants', 'T-Shirts', 'Jackets', 'Traditional Wear']
-    },
-    {
-      id: 2,
-      name: 'women',
-      displayName: 'Women',
-      subcategories: ['Dresses', 'Tops', 'Sarees', 'Lehengas', 'Western Wear']
-    },
-    {
-      id: 3,
-      name: 'kids',
-      displayName: 'Kids',
-      subcategories: ['Boys', 'Girls', 'Infants', 'School Wear']
-    }
-  ];
-
+  const categories = await Category.find({});
   res.json({
     success: true,
     categories
   });
+});
+
+// @desc    Get category by ID
+// @route   GET /api/categories/:id
+// @access  Public
+export const getCategoryById = asyncHandler(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+
+  if (category) {
+    res.json(category);
+  } else {
+    res.status(404);
+    throw new Error('Category not found');
+  }
+});
+
+// @desc    Create a category
+// @route   POST /api/categories
+// @access  Private/Admin
+export const createCategory = asyncHandler(async (req, res) => {
+  const { name, description, image } = req.body;
+
+  const categoryExists = await Category.findOne({ name });
+
+  if (categoryExists) {
+    res.status(400);
+    throw new Error('Category already exists');
+  }
+
+  const category = await Category.create({
+    name,
+    description,
+    image
+  });
+
+  if (category) {
+    res.status(201).json(category);
+  } else {
+    res.status(400);
+    throw new Error('Invalid category data');
+  }
+});
+
+// @desc    Delete a category
+// @route   DELETE /api/categories/:id
+// @access  Private/Admin
+export const deleteCategory = asyncHandler(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+
+  if (category) {
+    await category.deleteOne();
+    res.json({ message: 'Category removed' });
+  } else {
+    res.status(404);
+    throw new Error('Category not found');
+  }
 });

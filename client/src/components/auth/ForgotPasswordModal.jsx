@@ -24,7 +24,9 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                 setMessage('');
             }, 3000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to send reset email');
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to send reset email';
+            setError(errorMessage);
+            console.error("Reset Password Error:", err);
         } finally {
             setIsLoading(false);
         }
