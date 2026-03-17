@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
           } else {
             // Case B: Only token passed, fetch user profile
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/profile', config);
             userData = { ...data, token };
           }
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
           // Background refresh to get latest data (like firstName) and validate token
           try {
             const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/profile', config);
             // Preserve the token from local storage or response if it rotates (usually sticks)
             const updatedData = { ...data, token: parsedUser.token };
             setUser(updatedData);
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (firstName, lastName, email, password) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { firstName, lastName, email, password }, config);
+      const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/register', { firstName, lastName, email, password }, config);
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password }, config);
+      const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/login', { email, password }, config);
 
       if (data.otpSent) {
         // Case A: 2FA Required
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
   const verifyOtp = async (email, otp) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/verify-otp', { email, otp }, config);
+      const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/verify-otp', { email, otp }, config);
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post('http://localhost:5000/api/auth/upload-profile-picture', formData, config);
+      const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/upload-profile-picture', formData, config);
 
       const updatedUser = { ...user, profilePicture: data.profilePicture };
       setUser(updatedUser);
@@ -144,7 +144,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.put('http://localhost:5000/api/auth/change-password', { currentPassword, newPassword }, config);
+      await axios.put('https://e-commerce-2e5z.onrender.com/api/auth/change-password', { currentPassword, newPassword }, config);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Password change failed' };
@@ -160,7 +160,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.delete('http://localhost:5000/api/auth/delete-account', config);
+      await axios.delete('https://e-commerce-2e5z.onrender.com/api/auth/delete-account', config);
       logout(); // Log out after deletion
       return { success: true };
     } catch (error) {
@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }) => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` }
       };
-      const { data } = await axios.get('http://localhost:5000/api/auth/stats', config);
+      const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/stats', config);
       return { success: true, data };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Failed to fetch stats' };
@@ -183,7 +183,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async (token) => {
     // Logic to call verify endpoint usually happens on a specific page, but keeping a helper here is good
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/auth/verify-email/${token}`);
+      const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/auth/verify-email/${token}`);
       return { success: true, message: data.message };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Verification failed' };
@@ -195,7 +195,7 @@ export const AuthProvider = ({ children }) => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` }
       };
-      await axios.post('http://localhost:5000/api/auth/send-verification', {}, config);
+      await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/send-verification', {}, config);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Failed to send verification email' };
@@ -205,7 +205,7 @@ export const AuthProvider = ({ children }) => {
   const getWishlist = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.get('http://localhost:5000/api/auth/wishlist', config);
+      const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/wishlist', config);
       return { success: true, data };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error fetching wishlist' };
@@ -215,7 +215,7 @@ export const AuthProvider = ({ children }) => {
   const addToWishlist = async (productId) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/wishlist', { productId }, config);
+      const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/wishlist', { productId }, config);
       return { success: true, message: data.message };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error adding to wishlist' };
@@ -225,7 +225,7 @@ export const AuthProvider = ({ children }) => {
   const removeFromWishlist = async (productId) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      await axios.delete(`http://localhost:5000/api/auth/wishlist/${productId}`, config);
+      await axios.delete(`https://e-commerce-2e5z.onrender.com/api/auth/wishlist/${productId}`, config);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error removing from wishlist' };
@@ -235,7 +235,7 @@ export const AuthProvider = ({ children }) => {
   const getRecentlyViewed = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.get('http://localhost:5000/api/auth/recently-viewed', config);
+      const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/recently-viewed', config);
       return { success: true, data };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error fetching recently viewed' };
@@ -246,7 +246,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return; // Only if logged in
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      await axios.post('http://localhost:5000/api/auth/recently-viewed', { productId }, config);
+      await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/recently-viewed', { productId }, config);
     } catch (err) {
       // Silent fail for recently viewed
       console.error(err);

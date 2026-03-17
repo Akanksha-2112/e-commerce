@@ -20,7 +20,7 @@ export const GlobalProvider = ({ children }) => {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
                 // Fetch Cart
-                const { data: cartData } = await axios.get('http://localhost:5000/api/cart', config);
+                const { data: cartData } = await axios.get('https://e-commerce-2e5z.onrender.com/api/cart', config);
                 const cartMap = {};
                 cartData.items.forEach(item => {
                     // Ensure product is populated
@@ -39,7 +39,7 @@ export const GlobalProvider = ({ children }) => {
                 setCart(cartMap);
 
                 // Fetch Wishlist
-                const { data: wishlistData } = await axios.get('http://localhost:5000/api/auth/wishlist', config);
+                const { data: wishlistData } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/wishlist', config);
                 const wishlistMap = {};
                 wishlistData.forEach(product => {
                     wishlistMap[product._id] = {
@@ -87,7 +87,7 @@ export const GlobalProvider = ({ children }) => {
         if (user && user.token) {
             try {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                await axios.post('http://localhost:5000/api/cart', {
+                await axios.post('https://e-commerce-2e5z.onrender.com/api/cart', {
                     productId: product.id,
                     quantity: 1,
                     size: product.size || 'M', // Default size if not specified
@@ -136,7 +136,7 @@ export const GlobalProvider = ({ children }) => {
         if (user && user.token) {
             try {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                await axios.post('http://localhost:5000/api/auth/wishlist', { productId: product.id }, config);
+                await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/wishlist', { productId: product.id }, config);
             } catch (error) {
                 console.error("Wishlist sync failed", error);
             }
@@ -153,7 +153,7 @@ export const GlobalProvider = ({ children }) => {
         if (user && user.token) {
             try {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                await axios.delete(`http://localhost:5000/api/auth/wishlist/${productId}`, config);
+                await axios.delete(`https://e-commerce-2e5z.onrender.com/api/auth/wishlist/${productId}`, config);
             } catch (error) {
                 console.error("Wishlist remove failed", error);
             }

@@ -19,7 +19,7 @@ const MenTailoringPage = () => {
             try {
                 // Fetch products for category 'Men' and active subcategory
                 // Using URL query params which our backend now supports
-                const { data } = await axios.get(`http://localhost:5000/api/products?category=Men&subcategory=${activeSubcategory}`);
+                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=Men&subcategory=${activeSubcategory}`);
                 setProducts(data.products || []);
                 setLoading(false);
             } catch (err) {

@@ -16,7 +16,7 @@ const CollectionPage = () => {
         const fetchProducts = async () => {
             try {
                 // Fetch products by category ID
-                const { data } = await axios.get(`http://localhost:5000/api/products?category=${categoryId}`);
+                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=${categoryId}`);
                 // Simple client-side limit to 10 as per requirement if API doesn't support limit param yet
                 setProducts(data.products.slice(0, 10));
                 setLoading(false);

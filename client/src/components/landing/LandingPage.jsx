@@ -41,7 +41,7 @@ const LandingPage = () => {
     const fetchMemberCollection = async () => {
         setLoadingProducts(true);
         try {
-            const url = 'http://localhost:5000/api/products';
+            const url = 'https://e-commerce-2e5z.onrender.com/api/products';
             const response = await axios.get(url);
             if (response.data && response.data.products) {
                 setProducts(response.data.products.slice(0, 9));

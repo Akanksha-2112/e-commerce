@@ -16,7 +16,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
         setMessage('');
 
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+            const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/forgot-password', { email });
             setMessage(data.message || 'Password reset email sent! Please check your inbox.');
             setEmail('');
             setTimeout(() => {

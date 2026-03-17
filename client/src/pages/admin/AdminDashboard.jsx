@@ -29,7 +29,7 @@ const AdminDashboard = () => {
 
     const fetchCategories = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/categories');
+            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/categories');
             console.log("Categories fetched:", data);
             setCategories(data.categories || data);
         } catch (err) {
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
                 category: formData.category, // ObjectId
             };
 
-            await axios.post('http://localhost:5000/api/products', payload, config);
+            await axios.post('https://e-commerce-2e5z.onrender.com/api/products', payload, config);
             setMessage('Product created successfully');
             setFormData({
                 name: '',
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
         e.preventDefault();
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.post('http://localhost:5000/api/categories', { name: newCategory }, config);
+            await axios.post('https://e-commerce-2e5z.onrender.com/api/categories', { name: newCategory }, config);
             setNewCategory('');
             fetchCategories(); // Refresh list
             setMessage('Category added');

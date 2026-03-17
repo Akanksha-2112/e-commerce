@@ -31,7 +31,7 @@ const CategoryProducts = ({ category }) => {
             setLoading(true);
             try {
                 // Fetch from real API
-                const { data } = await axios.get(`http://localhost:5000/api/products?category=${category}&subcategory=${subcategory}`);
+                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=${category}&subcategory=${subcategory}`);
 
                 if (data.products && data.products.length > 0) {
                     setProducts(data.products);

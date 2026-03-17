@@ -13,7 +13,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/auth/verify-email/${token}`);
+                const response = await fetch(`https://e-commerce-2e5z.onrender.com/api/auth/verify-email/${token}`);
                 const data = await response.json();
 
                 if (response.ok) {

@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
   const fetchCart = async () => {
     if (!user) return;
     try {
-      const { data } = await axios.get('http://localhost:5000/api/cart', config);
+      const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/cart', config);
       setCart(data);
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -34,7 +34,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (productId, quantity, size, color) => {
     try {
       const { data } = await axios.post(
-        'http://localhost:5000/api/cart',
+        'https://e-commerce-2e5z.onrender.com/api/cart',
         { productId, quantity, size, color },
         config
       );
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
   const updateCartItem = async (itemId, quantity) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/cart/${itemId}`,
+        `https://e-commerce-2e5z.onrender.com/api/cart/${itemId}`,
         { quantity },
         config
       );
@@ -60,7 +60,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (itemId) => {
     try {
-      const { data } = await axios.delete(`http://localhost:5000/api/cart/${itemId}`, config);
+      const { data } = await axios.delete(`https://e-commerce-2e5z.onrender.com/api/cart/${itemId}`, config);
       setCart(data);
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -69,7 +69,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     try {
-      await axios.delete('http://localhost:5000/api/cart', config);
+      await axios.delete('https://e-commerce-2e5z.onrender.com/api/cart', config);
       setCart({ items: [], totalPrice: 0 });
     } catch (error) {
       console.error('Error clearing cart:', error);
