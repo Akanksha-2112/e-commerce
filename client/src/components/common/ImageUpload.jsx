@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { FaCamera, FaCloudUploadAlt, FaTimes, FaUser } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { FaCamera, FaUser } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const ImageUpload = ({ currentImage, onUpload, isLoading, label = "Profile Picture" }) => {
     const [preview, setPreview] = useState(null);
-    const [dragActive, setDragActive] = useState(false);
     const fileInputRef = useRef(null);
 
     const handleFile = (file) => {
@@ -32,27 +31,13 @@ const ImageUpload = ({ currentImage, onUpload, isLoading, label = "Profile Pictu
     const handleDrag = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (e.type === 'dragenter' || e.type === 'dragover') {
-            setDragActive(true);
-        } else if (e.type === 'dragleave') {
-            setDragActive(false);
-        }
     };
 
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        setDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             handleFile(e.dataTransfer.files[0]);
-        }
-    };
-
-    const clearPreview = (e) => {
-        e.stopPropagation(); // Prevent triggering click on parent
-        setPreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
         }
     };
 

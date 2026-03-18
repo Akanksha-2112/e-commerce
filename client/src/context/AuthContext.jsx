@@ -276,7 +276,6 @@ export const AuthProvider = ({ children }) => {
       addToWishlist,
       removeFromWishlist,
       getRecentlyViewed,
-      getRecentlyViewed,
       addToRecentlyViewed,
       verifyOtp
     }}>

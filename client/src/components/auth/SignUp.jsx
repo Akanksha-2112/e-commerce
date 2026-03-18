@@ -1,7 +1,6 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { FaUserPlus, FaGoogle, FaFacebook } from 'react-icons/fa';
 
 const SignUp = () => {
@@ -18,11 +17,6 @@ const SignUp = () => {
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // States: 'entry' -> 'protocol-check' -> 'success'
-  const [signupStage, setSignupStage] = useState('entry');
-
-
 
   const handleInitialSubmit = async (e) => {
     e.preventDefault();

@@ -44,8 +44,10 @@ const ProfilePage = () => {
 
     const [activeTab, setActiveTab] = useState('dashboard');
     const [orders, setOrders] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [loadingOrders, setLoadingOrders] = useState(false);
     const [stats, setStats] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [loadingStats, setLoadingStats] = useState(false);
     const [wishlist, setWishlist] = useState([]);
     const [recentlyViewed, setRecentlyViewed] = useState([]);
@@ -95,6 +97,7 @@ const ProfilePage = () => {
             fetchWishlistData();
             fetchRecentlyViewedData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, loading, navigate]);
 
     const fetchOrders = async () => {

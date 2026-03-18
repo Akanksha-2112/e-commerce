@@ -14,7 +14,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Auth Flow: 'entry' -> '2fa' -> 'authenticated'
@@ -23,11 +23,6 @@ const SignIn = () => {
 
   // Refs for 2FA inputs
   const codeRefs = useRef([]);
-
-  // Biometric Interactivity
-  const handleBiometricClick = () => {
-    // Just a visual shake or fill to show it's "Listening" but inputs are primary now
-  };
 
   const handleInitialSubmit = async (e) => {
     e.preventDefault();
