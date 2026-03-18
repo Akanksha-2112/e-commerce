@@ -78,4 +78,10 @@ const productSchema = new mongoose.Schema({
   }
 });
 
+// FIX: Add indexes for frequently queried fields to improve performance
+productSchema.index({ category: 1, price: 1 });
+productSchema.index({ isFeatured: 1 });
+// Text index for search queries on name and description
+productSchema.index({ name: 'text', description: 'text' });
+
 export default mongoose.models.Product || mongoose.model('Product', productSchema);

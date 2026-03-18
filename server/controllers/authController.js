@@ -15,7 +15,6 @@ const __dirname = path.dirname(__filename);
 export const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  // Check if user exists
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -23,7 +22,6 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error('User already exists');
   }
 
-  // Create user
   const user = await User.create({
     firstName,
     lastName,
@@ -58,7 +56,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Find user by email
   const user = await User.findOne({ email }).select('+password');
 
   if (!user) {
@@ -67,18 +64,14 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (await user.comparePassword(password)) {
-    // Check if 2FA is enabled
     if (user.twoFactorEnabled) {
-      // Generate 6-digit OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // Hash OTP before saving (security best practice)
       user.loginOtp = crypto.createHash('sha256').update(otp).digest('hex');
-      user.loginOtpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+      user.loginOtpExpires = Date.now() + 10 * 60 * 1000;
 
       await user.save();
 
-      // Send OTP Email
       const html = otpEmail(user, otp);
       const logoPath = path.join(__dirname, '../../client/public/logo.png');
 
@@ -101,7 +94,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         res.json({
           success: true,
           message: 'OTP sent to email',
-          otpSent: true, // Flag for frontend
+          otpSent: true,
           email: user.email
         });
       } catch (error) {
@@ -113,7 +106,6 @@ export const loginUser = asyncHandler(async (req, res) => {
         throw new Error('Email could not be sent');
       }
     } else {
-      // 2FA Disabled: Login Immediately
       res.json({
         _id: user._id,
         firstName: user.firstName,
@@ -129,7 +121,6 @@ export const loginUser = asyncHandler(async (req, res) => {
         token: generateToken(user._id)
       });
     }
-
   } else {
     res.status(401);
     throw new Error('Invalid email or password');
@@ -142,7 +133,6 @@ export const loginUser = asyncHandler(async (req, res) => {
 export const verifyLoginOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
-  // Hash the entered OTP to compare
   const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
   const user = await User.findOne({
@@ -156,7 +146,6 @@ export const verifyLoginOtp = asyncHandler(async (req, res) => {
     throw new Error('Invalid or expired OTP');
   }
 
-  // Clear OTP
   user.loginOtp = undefined;
   user.loginOtpExpires = undefined;
   await user.save();
@@ -183,14 +172,13 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
+    // FIX: Removed duplicate role and phone fields that were previously listed twice
     res.json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       name: user.name,
       email: user.email,
-      role: user.role,
-      phone: user.phone,
       role: user.role,
       phone: user.phone,
       address: user.address,
@@ -258,12 +246,11 @@ export const uploadProfilePicture = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    // Construct local file URL
     const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     user.profilePicture = {
       url: imageUrl,
-      public_id: req.file.filename // Using filename as ID for local storage
+      public_id: req.file.filename
     };
 
     const updatedUser = await user.save();
@@ -296,22 +283,16 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    // Security: Do not reveal that the user does not exist
-    // Return success to prevent email enumeration
     return res.json({
       success: true,
       message: 'If an account exists, a secure link has been sent.'
     });
   }
 
-  // Generate reset token
   const resetToken = user.generatePasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  // Create reset URL
   const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
-
-  // Send email
   const emailHtml = passwordResetEmail(user, resetUrl);
 
   try {
@@ -322,7 +303,6 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     );
 
     if (!emailResult.success) {
-      // Revert token if email fails
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save({ validateBeforeSave: false });
@@ -332,12 +312,8 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       throw new Error('Unable to process request. Please contact your private concierge.');
     }
 
-    res.json({
-      success: true,
-      message: 'Password reset email sent'
-    });
+    res.json({ success: true, message: 'Password reset email sent' });
   } catch (error) {
-    // Revert token if unexpected error
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
@@ -355,7 +331,6 @@ export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
-  // Hash token to compare with database
   const resetPasswordToken = crypto
     .createHash('sha256')
     .update(token)
@@ -371,16 +346,12 @@ export const resetPassword = asyncHandler(async (req, res) => {
     throw new Error('Invalid or expired reset token');
   }
 
-  // Set new password
   user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
   await user.save();
 
-  res.json({
-    success: true,
-    message: 'Password reset successful'
-  });
+  res.json({ success: true, message: 'Password reset successful' });
 });
 
 // @desc    Verify email
@@ -389,7 +360,6 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
-  // Hash token
   const emailVerificationToken = crypto
     .createHash('sha256')
     .update(token)
@@ -406,10 +376,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   user.emailVerificationToken = undefined;
   await user.save();
 
-  res.json({
-    success: true,
-    message: 'Email verified successfully'
-  });
+  res.json({ success: true, message: 'Email verified successfully' });
 });
 
 // @desc    Send verification email
@@ -428,14 +395,10 @@ export const sendVerificationEmail = asyncHandler(async (req, res) => {
     throw new Error('Email already verified');
   }
 
-  // Generate verification token
   const verificationToken = user.generateEmailVerificationToken();
   await user.save({ validateBeforeSave: false });
 
-  // Create verification URL
   const verificationUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email/${verificationToken}`;
-
-  // Send email
   const emailHtml = emailVerificationEmail(user, verificationUrl);
   await sendEmail({
     email: user.email,
@@ -443,10 +406,7 @@ export const sendVerificationEmail = asyncHandler(async (req, res) => {
     html: emailHtml
   });
 
-  res.json({
-    success: true,
-    message: 'Verification email sent'
-  });
+  res.json({ success: true, message: 'Verification email sent' });
 });
 
 // @desc    Change password
@@ -462,21 +422,16 @@ export const changePassword = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Verify current password
   const isMatch = await user.comparePassword(currentPassword);
   if (!isMatch) {
     res.status(401);
     throw new Error('Current password is incorrect');
   }
 
-  // Set new password
   user.password = newPassword;
   await user.save();
 
-  res.json({
-    success: true,
-    message: 'Password changed successfully'
-  });
+  res.json({ success: true, message: 'Password changed successfully' });
 });
 
 // @desc    Delete account
@@ -492,20 +447,15 @@ export const deleteAccount = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Verify password
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
     res.status(401);
     throw new Error('Password is incorrect');
   }
 
-  // Delete user
   await user.deleteOne();
 
-  res.json({
-    success: true,
-    message: 'Account deleted successfully'
-  });
+  res.json({ success: true, message: 'Account deleted successfully' });
 });
 
 // @desc    Get user statistics
@@ -519,7 +469,6 @@ export const getUserStats = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Calculate statistics
   const totalOrders = user.orders.length;
   const totalSpent = user.orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
   const wishlistCount = user.wishlist ? user.wishlist.length : 0;
@@ -549,7 +498,6 @@ export const addToWishlist = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    // Check if product already in wishlist
     if (user.wishlist.includes(productId)) {
       res.status(400);
       throw new Error('Product already in wishlist');
@@ -590,9 +538,9 @@ export const getRecentlyViewed = asyncHandler(async (req, res) => {
   });
 
   const validProducts = user.recentlyViewed
-    .filter(item => item.product) // Remove nulls if product deleted
+    .filter(item => item.product)
     .sort((a, b) => b.viewedAt - a.viewedAt)
-    .slice(0, 10); // Limit to 10
+    .slice(0, 10);
 
   res.json(validProducts);
 });
@@ -605,20 +553,16 @@ export const addToRecentlyViewed = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    // Remove if already exists to update timestamp (re-add at end/start?? actually we sort by date)
-    // Easier: find existing index
     const existingIndex = user.recentlyViewed.findIndex(item => item.product.toString() === productId);
 
     if (existingIndex !== -1) {
       user.recentlyViewed.splice(existingIndex, 1);
     }
 
-    // Add to beginning or end - Schema has default date.now, so just push
     user.recentlyViewed.push({ product: productId, viewedAt: Date.now() });
 
-    // Limit to 20
     if (user.recentlyViewed.length > 20) {
-      user.recentlyViewed.shift(); // Remove oldest
+      user.recentlyViewed.shift();
     }
 
     await user.save();

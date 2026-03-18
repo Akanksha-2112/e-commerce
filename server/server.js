@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -13,6 +15,9 @@ import passport from './config/passport.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Validate critical environment variables
 console.log('🔍 Checking environment variables...');
@@ -37,7 +42,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to true in production with HTTPS
+    // FIX: automatically use secure cookies in production
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
@@ -48,6 +55,10 @@ app.use(passport.session());
 
 // Make passport available to routes
 app.set('passport', passport);
+
+// Serve static files from uploads directory
+// FIX: moved above app.listen() so it's registered before the server starts
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -65,17 +76,8 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Error Handler Middleware
+// Error Handler Middleware (must be last)
 app.use(errorHandler);
-
-// Serve static files from uploads directory
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(50));
