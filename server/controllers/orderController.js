@@ -67,8 +67,21 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // @route   GET /api/orders
 // @access  Private
 export const getUserOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
-  res.json(orders);
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await Promise.all([
+    Order.find({ user: req.user._id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Order.countDocuments({ user: req.user._id })
+  ]);
+
+  res.json({
+    orders,
+    page,
+    pages: Math.ceil(total / limit),
+    total
+  });
 });
 
 // @desc    Update order to paid

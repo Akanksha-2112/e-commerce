@@ -53,6 +53,35 @@ export const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update a category
+// @route   PUT /api/categories/:id
+// @access  Private/Admin
+export const updateCategory = asyncHandler(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    res.status(404);
+    throw new Error('Category not found');
+  }
+
+  const { name, description, image } = req.body;
+
+  if (name && name !== category.name) {
+    const exists = await Category.findOne({ name });
+    if (exists) {
+      res.status(400);
+      throw new Error('A category with that name already exists');
+    }
+    category.name = name;
+  }
+
+  if (description !== undefined) category.description = description;
+  if (image !== undefined) category.image = image;
+
+  const updated = await category.save();
+  res.json(updated);
+});
+
 // @desc    Delete a category
 // @route   DELETE /api/categories/:id
 // @access  Private/Admin

@@ -16,7 +16,24 @@ const createTransporter = () => {
   });
 };
 
-export const sendEmail = async (to, subject, html) => {
+// Accepts either sendEmail(to, subject, html) or sendEmail({ email, subject, html, attachments })
+export const sendEmail = async (toOrOptions, subject, html, attachments) => {
+  let to, emailSubject, emailHtml, emailAttachments;
+
+  if (toOrOptions && typeof toOrOptions === 'object' && !Array.isArray(toOrOptions)) {
+    // Object-style call: sendEmail({ email, subject, html, attachments })
+    to = toOrOptions.email;
+    emailSubject = toOrOptions.subject;
+    emailHtml = toOrOptions.html;
+    emailAttachments = toOrOptions.attachments;
+  } else {
+    // Positional call: sendEmail(to, subject, html, attachments)
+    to = toOrOptions;
+    emailSubject = subject;
+    emailHtml = html;
+    emailAttachments = attachments;
+  }
+
   const transporter = createTransporter();
 
   if (!transporter) {
@@ -24,9 +41,9 @@ export const sendEmail = async (to, subject, html) => {
     ====================================================
     [MOCK EMAIL SERVICE]
     To: ${to}
-    Subject: ${subject}
+    Subject: ${emailSubject}
     
-    ${html.replace(/<[^>]*>?/gm, '')} 
+    ${emailHtml.replace(/<[^>]*>?/gm, '')} 
     ====================================================
     `);
     // Return success in mock mode so the frontend flow continues
@@ -40,8 +57,9 @@ export const sendEmail = async (to, subject, html) => {
     const info = await transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject,
-      html,
+      subject: emailSubject,
+      html: emailHtml,
+      ...(emailAttachments ? { attachments: emailAttachments } : {})
     });
 
     console.log('✅ Email sent:', info.messageId);
@@ -54,9 +72,9 @@ export const sendEmail = async (to, subject, html) => {
     ====================================================
     [MOCK EMAIL SERVICE - FALLBACK]
     To: ${to}
-    Subject: ${subject}
+    Subject: ${emailSubject}
     
-    ${(html || '').replace(/<[^>]*>?/gm, '')} 
+    ${(emailHtml || '').replace(/<[^>]*>?/gm, '')} 
     ====================================================
     `);
 

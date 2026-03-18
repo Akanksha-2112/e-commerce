@@ -3,6 +3,7 @@ import {
     getCategories,
     getCategoryById,
     createCategory,
+    updateCategory,
     deleteCategory
 } from '../controllers/categoryController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
@@ -15,6 +16,7 @@ router.route('/')
 
 router.route('/:id')
     .get(getCategoryById)
+    .put(protect, admin, updateCategory)
     .delete(protect, admin, deleteCategory);
 
 export default router;

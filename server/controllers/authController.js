@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { sendEmail, passwordResetEmail, emailVerificationEmail, welcomeEmail, otpEmail } from '../utils/emailService.js';
+import { uploadToCloudinary } from '../middleware/upload.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -245,33 +246,46 @@ export const uploadProfilePicture = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.user._id);
 
-  if (user) {
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-
-    user.profilePicture = {
-      url: imageUrl,
-      public_id: req.file.filename
-    };
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      phone: updatedUser.phone,
-      address: updatedUser.address,
-      profilePicture: updatedUser.profilePicture,
-      emailVerified: updatedUser.emailVerified,
-      token: generateToken(updatedUser._id)
-    });
-  } else {
+  if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
+
+  let imageUrl, publicId;
+
+  // Use Cloudinary if the file is in memory (Cloudinary mode), else use local URL
+  if (req.file.buffer) {
+    try {
+      const result = await uploadToCloudinary(req.file.buffer, 'profile-pictures');
+      imageUrl = result.secure_url;
+      publicId = result.public_id;
+    } catch (err) {
+      res.status(500);
+      throw new Error('Image upload to Cloudinary failed');
+    }
+  } else {
+    // Local disk fallback
+    imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    publicId = req.file.filename;
+  }
+
+  user.profilePicture = { url: imageUrl, public_id: publicId };
+
+  const updatedUser = await user.save();
+
+  res.json({
+    _id: updatedUser._id,
+    firstName: updatedUser.firstName,
+    lastName: updatedUser.lastName,
+    name: updatedUser.name,
+    email: updatedUser.email,
+    role: updatedUser.role,
+    phone: updatedUser.phone,
+    address: updatedUser.address,
+    profilePicture: updatedUser.profilePicture,
+    emailVerified: updatedUser.emailVerified,
+    token: generateToken(updatedUser._id)
+  });
 });
 
 // @desc    Forgot password
