@@ -24,6 +24,8 @@ console.log('🔍 Checking environment variables...');
 console.log('✓ MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : '❌ Missing');
 console.log('✓ JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : '❌ Missing');
 console.log('✓ CLIENT_URL:', process.env.CLIENT_URL || 'Using default: http://localhost:3000');
+console.log('✓ SMTP_USER:', process.env.SMTP_USER || '❌ Not set (Mock email mode)');
+console.log('✓ SMTP_PASS:', process.env.SMTP_PASS ? 'Set' : '❌ Not set (Mock email mode)');
 
 // Connect to Database
 connectDB();
