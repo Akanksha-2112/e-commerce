@@ -78,7 +78,8 @@ export const AuthProvider = ({ children }) => {
       navigate('/sarees');
       return { success: true };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message || 'Registration failed' };
+      const msg = error.response?.data?.message || (error.message === 'Network Error' ? 'Network Error: Cannot reach server.' : 'Registration failed');
+      return { success: false, message: msg };
     }
   };
 
@@ -99,7 +100,8 @@ export const AuthProvider = ({ children }) => {
 
       return { success: false, message: 'Unexpected response from server' };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message || 'Login failed' };
+      const msg = error.response?.data?.message || (error.message === 'Network Error' ? 'Network Error: Cannot reach server.' : 'Login failed');
+      return { success: false, message: msg };
     }
   };
 

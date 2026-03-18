@@ -28,9 +28,12 @@ console.log('✓ CLIENT_URL:', process.env.CLIENT_URL || 'Using default: http://
 // Connect to Database
 connectDB();
 
+// Trust proxy for rate limiters behind Render load balancer
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'http://localhost:3000', /\.vercel\.app$/],
   credentials: true
 }));
 app.use(express.json());
