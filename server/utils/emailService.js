@@ -51,34 +51,35 @@ export const sendEmail = async (toOrOptions, subject, html, attachments) => {
   }
 
   try {
-    // Verify connection configuration
     await transporter.verify();
 
     const info = await transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: `"${process.env.FROM_NAME || 'AWIK SPECTRUM'}" <${process.env.SMTP_USER}>`,
       to,
       subject: emailSubject,
       html: emailHtml,
       ...(emailAttachments ? { attachments: emailAttachments } : {})
     });
 
-    console.log('✅ Email sent:', info.messageId);
+    console.log('\u2705 Email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Email sending failed:', error);
-    console.log('⚠️  Falling back to MOCK EMAIL SERVICE due to error.');
+    console.error('\u274c Email sending failed.');
+    console.error('   Code   :', error.code);
+    console.error('   Message:', error.message);
 
-    console.log(`
-    ====================================================
-    [MOCK EMAIL SERVICE - FALLBACK]
-    To: ${to}
-    Subject: ${emailSubject}
-    
-    ${(emailHtml || '').replace(/<[^>]*>?/gm, '')} 
-    ====================================================
-    `);
+    if (error.code === 'EAUTH') {
+      console.error('');
+      console.error('   \u26a0\ufe0f  GMAIL AUTH FAILURE - most likely causes:');
+      console.error('   1. SMTP_PASS is your regular Gmail password.');
+      console.error('      Gmail requires an App Password since 2022.');
+      console.error('      Generate one at: https://myaccount.google.com/apppasswords');
+      console.error('   2. 2-Step Verification is not enabled on the Google account.');
+      console.error('      App Passwords require 2FA to be turned on first.');
+      console.error('');
+    }
 
-    return { success: true, messageId: 'MOCK_FALLBACK_ID' };
+    return { success: false, error: error.message, code: error.code };
   }
 };
 

@@ -309,33 +309,28 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
   const emailHtml = passwordResetEmail(user, resetUrl);
 
-  try {
-    const emailResult = await sendEmail(
-      user.email,
-      'Password Reset Request - AWIK SPECTRUM',
-      emailHtml
-    );
+  const emailResult = await sendEmail(
+    user.email,
+    'Password Reset Request - AWIK SPECTRUM',
+    emailHtml
+  );
 
-    if (!emailResult.success) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpire = undefined;
-      await user.save({ validateBeforeSave: false });
-
-      console.error('Email Service Error:', emailResult.error);
-      res.status(500);
-      throw new Error('Unable to process request. Please contact your private concierge.');
-    }
-
-    res.json({ success: true, message: 'Password reset email sent' });
-  } catch (error) {
+  if (!emailResult.success) {
+    // Roll back the token so a fresh attempt can be made
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
 
-    console.error('Forgot Password Error:', error);
+    console.error('Email Service Error:', emailResult.error, '| Code:', emailResult.code);
     res.status(500);
-    throw new Error('Unable to process request. Please contact your private concierge.');
+    throw new Error(
+      emailResult.code === 'EAUTH'
+        ? 'Email authentication failed. Check SMTP_PASS in your .env — Gmail requires an App Password.'
+        : 'Password reset email could not be sent. Please try again later.'
+    );
   }
+
+  res.json({ success: true, message: 'Password reset email sent' });
 });
 
 // @desc    Reset password
