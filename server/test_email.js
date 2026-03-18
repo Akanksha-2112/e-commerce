@@ -1,12 +1,10 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { sendEmail } from './utils/emailService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.join(__dirname, '.env') });
 
 console.log('Testing email configuration...');
 console.log(`SMTP_USER: ${process.env.SMTP_USER}`);

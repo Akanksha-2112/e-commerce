@@ -39,9 +39,11 @@ const createTransporter = async () => {
   }
 
   if (smtpConfigured) {
-    console.warn('⚠️  Using basic SMTP — this may fail on Render free tier (SMTP ports blocked).');
+    console.log('📧 Using SMTP (Gmail App Password) transport.');
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // SSL — works both locally and on most hosts
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,

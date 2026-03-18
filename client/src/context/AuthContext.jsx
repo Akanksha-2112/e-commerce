@@ -10,63 +10,29 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleAuth = async () => {
-      // Check for tokens in URL (OAuth redirect)
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      const userStr = params.get('user');
+    const initAuth = async () => {
+      const userInfo = localStorage.getItem('userInfo');
+      if (userInfo) {
+        const parsedUser = JSON.parse(userInfo);
+        setUser(parsedUser);
 
-      if (token) {
+        // Background refresh to get latest data and validate token
         try {
-          let userData;
-          if (userStr) {
-            // Case A: User data passed via URL
-            const parsedUser = JSON.parse(decodeURIComponent(userStr));
-            userData = { ...parsedUser, token };
-          } else {
-            // Case B: Only token passed, fetch user profile
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/profile', config);
-            userData = { ...data, token };
-          }
-
-          setUser(userData);
-          localStorage.setItem('userInfo', JSON.stringify(userData));
-
-          // Clean up URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-
-          // Redirect to Command Center
-          navigate('/sarees');
+          const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
+          const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/profile', config);
+          const updatedData = { ...data, token: parsedUser.token };
+          setUser(updatedData);
+          localStorage.setItem('userInfo', JSON.stringify(updatedData));
         } catch (error) {
-          console.error('Error parsing user data from URL', error);
-        }
-      } else {
-        const userInfo = localStorage.getItem('userInfo');
-        if (userInfo) {
-          const parsedUser = JSON.parse(userInfo);
-          setUser(parsedUser);
-
-          // Background refresh to get latest data (like firstName) and validate token
-          try {
-            const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/auth/profile', config);
-            // Preserve the token from local storage or response if it rotates (usually sticks)
-            const updatedData = { ...data, token: parsedUser.token };
-            setUser(updatedData);
-            localStorage.setItem('userInfo', JSON.stringify(updatedData));
-          } catch (error) {
-            console.error('Token invalid or expired', error);
-            // Optional: Logout if token is invalid, but for now just let it be or silent fail
-            // logout();
-          }
+          console.error('Token invalid or expired', error);
+          // Silent fail — let user continue with cached data or re-login manually
         }
       }
       setLoading(false);
     };
 
-    handleAuth();
-  }, [navigate]);
+    initAuth();
+  }, []);
 
   const register = async (firstName, lastName, email, password) => {
     try {
@@ -264,6 +230,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user,
+      setUser,
       loading,
       register,
       login,

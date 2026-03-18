@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import CategoryLandingPage from "./pages/CategoryLandingPage";
 import CategoryProducts from "./pages/CategoryProducts";
 import CollectionPage from "./pages/CollectionPage";
+import OAuthCallback from "./pages/OAuthCallback";
 
 import { GlobalProvider } from "./context/GlobalContext";
 import LuxurySidebar from "./components/common/LuxurySidebar";
@@ -60,6 +61,7 @@ function App() {
             <Route path="/entrance" element={<MemberEntrance />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/collection/:categoryId" element={<CollectionPage />} />
+            <Route path="/oauth/callback" element={<OAuthCallback />} />
           </Routes>
         </GlobalProvider>
       </AuthProvider>
