@@ -1,19 +1,56 @@
 import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 
-const createTransporter = () => {
-  // Check for required environment variables
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.warn('⚠️  Email service not configured: Using MOCK TRANSPORTER (Check User/Pass).');
-    return null;
+// ─────────────────────────────────────────────────────────────────────────────
+// Gmail OAuth2 transport (uses HTTPS port 443 — never blocked by Render)
+// Requires env vars: GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN
+// Fallback: plain SMTP via SMTP_USER / SMTP_PASS (works only outside Render)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const oauthConfigured =
+  process.env.GMAIL_CLIENT_ID &&
+  process.env.GMAIL_CLIENT_SECRET &&
+  process.env.GMAIL_REFRESH_TOKEN;
+
+const smtpConfigured = process.env.SMTP_USER && process.env.SMTP_PASS;
+
+const createTransporter = async () => {
+  if (oauthConfigured) {
+    const oAuth2Client = new google.auth.OAuth2(
+      process.env.GMAIL_CLIENT_ID,
+      process.env.GMAIL_CLIENT_SECRET,
+      'https://developers.google.com/oauthplayground'
+    );
+    oAuth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
+
+    const { token: accessToken } = await oAuth2Client.getAccessToken();
+
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.SMTP_USER || process.env.GMAIL_USER,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+        accessToken,
+      },
+    });
   }
 
-  return nodemailer.createTransport({
-    service: 'gmail', // Or use 'host' and 'port' for other providers
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+  if (smtpConfigured) {
+    console.warn('⚠️  Using basic SMTP — this may fail on Render free tier (SMTP ports blocked).');
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  console.warn('⚠️  No email credentials configured — using Mock Email Service.');
+  return null;
 };
 
 // Accepts either sendEmail(to, subject, html) or sendEmail({ email, subject, html, attachments })
@@ -21,20 +58,24 @@ export const sendEmail = async (toOrOptions, subject, html, attachments) => {
   let to, emailSubject, emailHtml, emailAttachments;
 
   if (toOrOptions && typeof toOrOptions === 'object' && !Array.isArray(toOrOptions)) {
-    // Object-style call: sendEmail({ email, subject, html, attachments })
     to = toOrOptions.email;
     emailSubject = toOrOptions.subject;
     emailHtml = toOrOptions.html;
     emailAttachments = toOrOptions.attachments;
   } else {
-    // Positional call: sendEmail(to, subject, html, attachments)
     to = toOrOptions;
     emailSubject = subject;
     emailHtml = html;
     emailAttachments = attachments;
   }
 
-  const transporter = createTransporter();
+  let transporter;
+  try {
+    transporter = await createTransporter();
+  } catch (err) {
+    console.error('❌ Failed to create email transporter:', err.message);
+    transporter = null;
+  }
 
   if (!transporter) {
     console.log(`
@@ -46,36 +87,33 @@ export const sendEmail = async (toOrOptions, subject, html, attachments) => {
     ${emailHtml.replace(/<[^>]*>?/gm, '')} 
     ====================================================
     `);
-    // Return success in mock mode so the frontend flow continues
     return { success: true, messageId: 'MOCK_EMAIL_ID' };
   }
 
   try {
-    await transporter.verify();
+    const senderName = process.env.FROM_NAME || 'AWIK SPECTRUM';
+    const senderEmail = process.env.SMTP_USER || process.env.GMAIL_USER;
 
     const info = await transporter.sendMail({
-      from: `"${process.env.FROM_NAME || 'AWIK SPECTRUM'}" <${process.env.SMTP_USER}>`,
+      from: `"${senderName}" <${senderEmail}>`,
       to,
       subject: emailSubject,
       html: emailHtml,
       ...(emailAttachments ? { attachments: emailAttachments } : {})
     });
 
-    console.log('\u2705 Email sent:', info.messageId);
+    console.log('✅ Email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('\u274c Email sending failed.');
+    console.error('❌ Email sending failed.');
     console.error('   Code   :', error.code);
     console.error('   Message:', error.message);
 
     if (error.code === 'EAUTH') {
       console.error('');
-      console.error('   \u26a0\ufe0f  GMAIL AUTH FAILURE - most likely causes:');
-      console.error('   1. SMTP_PASS is your regular Gmail password.');
-      console.error('      Gmail requires an App Password since 2022.');
-      console.error('      Generate one at: https://myaccount.google.com/apppasswords');
-      console.error('   2. 2-Step Verification is not enabled on the Google account.');
-      console.error('      App Passwords require 2FA to be turned on first.');
+      console.error('   ⚠️  AUTH FAILURE — most likely causes:');
+      console.error('   1. Using Gmail OAuth2: GMAIL_REFRESH_TOKEN may be expired. Generate a new one.');
+      console.error('   2. Using basic SMTP: SMTP_PASS must be a Gmail App Password (not your login password).');
       console.error('');
     }
 
@@ -83,7 +121,6 @@ export const sendEmail = async (toOrOptions, subject, html, attachments) => {
   }
 };
 
-// ... templates ... (keep the same)
 const baseTemplate = (content) => `
 <!DOCTYPE html>
 <html>
@@ -162,3 +199,4 @@ export const otpEmail = (user, otp) => {
   `;
   return baseTemplate(content);
 };
+
