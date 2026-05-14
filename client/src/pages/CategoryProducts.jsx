@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useGlobal } from '../context/GlobalContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
-
 import { API_BASE } from '../config';
 
-// Mock Data Generator for Fallback
-const generateMockProducts = (category, subcategory) => {
-    return Array.from({ length: 10 }).map((_, i) => ({
+const FALLBACK = [
+    'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=80',
+    'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=700&q=80',
+    'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=700&q=80',
+    'https://images.unsplash.com/photo-1614179689702-355944cd0918?w=700&q=80',
+    'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=700&q=80',
+    'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=700&q=80',
+];
+
+const generateMockProducts = (category, subcategory) =>
+    Array.from({ length: 8 }).map((_, i) => ({
         _id: `mock-${i}`,
-        name: `Tailored ${subcategory === 'Shirts' ? 'Cotton' : 'Luxury'} ${subcategory.slice(0, -1)} ${i + 1}`,
-        brand: 'MAISON',
-        price: 12500 + (i * 1500),
-        images: [
-            { url: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&q=80&w=800' }, // Placeholder 1
-            { url: 'https://images.unsplash.com/photo-1620799140408-ed5341cdb4f3?auto=format&fit=crop&q=80&w=800' }  // Placeholder 2
-        ]
+        name: `${subcategory} Edition ${i + 1}`,
+        brand: 'AWIK MAISON',
+        price: 4500 + i * 900,
+        images: [{ url: FALLBACK[i % FALLBACK.length] }],
     }));
-};
 
 const CategoryProducts = ({ category }) => {
     const { subcategory } = useParams();
+    const navigate = useNavigate();
     const { addToCart } = useGlobal();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,198 +36,124 @@ const CategoryProducts = ({ category }) => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                // Fetch from real API
                 const { data } = await axios.get(`${API_BASE}/api/products?category=${category}&subcategory=${subcategory}`);
-
-                if (data.products && data.products.length > 0) {
+                if (data.products?.length > 0) {
                     setProducts(data.products);
                 } else {
-                    // Fallback to Mock Data
-                    console.log("Database empty for this route, using Mock Data");
                     setProducts(generateMockProducts(category, subcategory));
                 }
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching products, using mock:", err);
+            } catch {
                 setProducts(generateMockProducts(category, subcategory));
-                setLoading(false);
             }
+            setLoading(false);
         };
-
         fetchProducts();
     }, [category, subcategory]);
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(price);
-    };
+    const formatPrice = p => new Intl.NumberFormat('en-IN', {
+        style: 'currency', currency: 'INR', maximumFractionDigits: 0,
+    }).format(p);
 
-    const handleAddToCart = (e, product) => {
-        e.stopPropagation();
-        addToCart({
-            id: product._id,
-            name: product.name,
-            price: product.price,
-            image: product.images[0]?.url,
-            quantity: 1
-        });
-    };
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] }
-        }
+    const getImg = (product, index) => {
+        const url = product.images?.[0]?.url;
+        if (url && !url.includes('placeholder') && !url.includes('placehold')) return url;
+        return FALLBACK[index % FALLBACK.length];
     };
 
     return (
-        <div style={{ paddingTop: '120px', paddingBottom: '100px', minHeight: '100vh', background: '#fff' }}>
+        <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
             <Navbar />
-            <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-                <h4 style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.9rem',
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: '#666',
-                    marginBottom: '15px'
-                }}>
+
+            {/* Header */}
+            <div style={{ paddingTop: '120px', textAlign: 'center', marginBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '2rem' }}>
+                <p style={{ fontSize: '0.7rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C9A84C', marginBottom: '0.6rem' }}>
                     {category}
-                </h4>
+                </p>
                 <h1 style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: '3rem',
-                    color: '#1A1A1A'
+                    fontFamily: "'Anton', 'Impact', sans-serif",
+                    fontSize: 'clamp(3rem, 8vw, 7rem)',
+                    color: '#fff', lineHeight: 0.9, letterSpacing: '0.02em',
                 }}>
-                    {subcategory}
+                    {subcategory?.toUpperCase()}
                 </h1>
+                <button onClick={() => navigate(`/${category.toLowerCase()}`)}
+                    style={{ marginTop: '1.5rem', background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)', padding: '0.5rem 1.4rem', cursor: 'pointer', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'all 0.2s' }}>
+                    ← Back to {category}
+                </button>
             </div>
 
+            {/* Grid */}
             {loading ? (
-                <div style={{ textAlign: 'center', paddingTop: '50px' }}>Loading Collection...</div>
+                <div style={{ textAlign: 'center', padding: '100px', color: '#555', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                    Loading Collection...
+                </div>
             ) : (
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', // Spacious luxury grid
-                        gap: '60px',
-                        padding: '0 80px',
-                        maxWidth: '1800px',
-                        margin: '0 auto'
-                    }}
-                >
-                    {products.map((product) => (
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '1px', background: 'rgba(255,255,255,0.06)',
+                    maxWidth: '1600px', margin: '0 auto',
+                }}>
+                    {products.map((product, index) => (
                         <motion.div
                             key={product._id}
-                            variants={itemVariants}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.05 }}
+                            style={{ cursor: 'pointer', background: '#0a0a0a', overflow: 'hidden' }}
                             onMouseEnter={() => setHoveredProduct(product._id)}
                             onMouseLeave={() => setHoveredProduct(null)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate(`/product/${product._id}`)}
                         >
-                            <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', marginBottom: '25px', background: '#f9f9f9' }}>
-                                {/* Main Image (with Hover Swap) */}
+                            {/* Image */}
+                            <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden' }}>
                                 <img
-                                    src={
-                                        hoveredProduct === product._id && product.images[1]?.url
-                                            ? product.images[1].url
-                                            : product.images[0]?.url
-                                    }
+                                    src={getImg(product, index)}
                                     alt={product.name}
+                                    onError={e => { e.target.onerror = null; e.target.src = FALLBACK[index % FALLBACK.length]; }}
                                     style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                        transition: 'transform 0.8s ease, opacity 0.3s ease',
-                                        transform: hoveredProduct === product._id ? 'scale(1.05)' : 'scale(1)'
+                                        width: '100%', height: '100%', objectFit: 'cover',
+                                        transition: 'transform 0.7s ease', filter: 'brightness(0.85)',
+                                        transform: hoveredProduct === product._id ? 'scale(1.06)' : 'scale(1)',
                                     }}
                                 />
+                                <span style={{
+                                    position: 'absolute', top: '0.75rem', left: '0.75rem',
+                                    background: '#fff', color: '#0a0a0a',
+                                    fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.12em',
+                                    padding: '0.2rem 0.5rem', textTransform: 'uppercase',
+                                }}>NEW</span>
 
-                                {/* Add to Bag Button Overlay */}
-                                <AnimatePresence>
-                                    {hoveredProduct === product._id && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 10 }}
-                                            transition={{ duration: 0.3 }}
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: '20px',
-                                                left: 0,
-                                                width: '100%',
-                                                textAlign: 'center'
-                                            }}
-                                        >
-                                            <button
-                                                onClick={(e) => handleAddToCart(e, product)}
-                                                style={{
-                                                    background: '#1A1A1A',
-                                                    color: '#fff',
-                                                    border: 'none',
-                                                    padding: '14px 40px',
-                                                    fontFamily: "'Inter', sans-serif",
-                                                    textTransform: 'uppercase',
-                                                    fontSize: '0.8rem',
-                                                    letterSpacing: '0.15em',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Add to Bag
-                                            </button>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                {/* Hover CTA */}
+                                <div style={{
+                                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                                    padding: '0.8rem 1rem', background: 'rgba(10,10,10,0.92)',
+                                    display: 'flex', gap: '0.5rem',
+                                    transform: hoveredProduct === product._id ? 'translateY(0)' : 'translateY(100%)',
+                                    transition: 'transform 0.3s ease',
+                                }}>
+                                    <button
+                                        onClick={e => { e.stopPropagation(); addToCart({ id: product._id, name: product.name, price: product.price, image: getImg(product, index), quantity: 1 }); }}
+                                        style={{ flex: 1, background: '#fff', color: '#0a0a0a', border: 'none', padding: '0.65rem', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer' }}
+                                    >Add to Bag</button>
+                                </div>
                             </div>
 
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{
-                                    fontFamily: "'Inter', sans-serif",
-                                    fontSize: '0.75rem',
-                                    letterSpacing: '0.1em',
-                                    textTransform: 'uppercase',
-                                    color: '#888',
-                                    marginBottom: '8px'
-                                }}>
-                                    {product.brand || 'MAISON'}
+                            {/* Info */}
+                            <div style={{ padding: '0.9rem 1rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                                <span style={{ fontSize: '0.6rem', color: '#555', letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>AWIK MAISON</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#e8e8e8' }}>{product.name}</span>
+                                    <span style={{ color: '#555' }}>↗</span>
                                 </div>
-                                <h3 style={{
-                                    fontFamily: "'Playfair Display', serif",
-                                    fontSize: '1.25rem',
-                                    color: '#1A1A1A',
-                                    marginBottom: '8px'
-                                }}>
-                                    {product.name}
-                                </h3>
-                                <div style={{
-                                    fontFamily: "'Inter', sans-serif",
-                                    fontSize: '0.95rem',
-                                    color: '#333'
-                                }}>
-                                    {formatPrice(product.price)}
-                                </div>
+                                <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>{formatPrice(product.price)}</p>
                             </div>
                         </motion.div>
                     ))}
-                </motion.div>
+                </div>
             )}
+
+            <div style={{ height: '4rem' }} />
         </div>
     );
 };
