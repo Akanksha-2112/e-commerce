@@ -49,7 +49,7 @@ const TICKER = ['AWIK SPECTRUM', '★', 'CRAFT', '★', 'HERITAGE', '★', 'INTE
 /* ─── Component ─────────────────────────────── */
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { toggleCart, toggleSidebar, wishlist } = useGlobal();
+  const { toggleCart, toggleSidebar } = useGlobal();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
