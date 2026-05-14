@@ -210,6 +210,20 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
+    // Clear the entire cart (after a successful checkout, for example).
+    // Optimistically wipes local state then mirrors to the server.
+    const clearCart = async () => {
+        setCart({});
+        if (user && user.token) {
+            try {
+                const config = { headers: { Authorization: `Bearer ${user.token}` } };
+                await axios.delete(`${API_BASE}/api/cart`, config);
+            } catch (error) {
+                console.error("Clear cart failed", error);
+            }
+        }
+    };
+
     const toggleWishlist = (product) => {
         if (wishlist[product.id]) {
             removeFromWishlist(product.id);
@@ -233,6 +247,7 @@ export const GlobalProvider = ({ children }) => {
                 wishlist,
                 addToCart,
                 removeFromCart,
+                clearCart,
                 addToWishlist,
                 removeFromWishlist,
                 toggleWishlist,

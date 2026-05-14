@@ -46,6 +46,18 @@ inside the Emergent pod — all work is code-only and pushed to GitHub for Verce
   - All interactive elements have `data-testid` attributes
 - **Route registration** — added `/product/:id` to `App.jsx`. The Landing Page already navigates here but the route was missing previously (would 404).
 - **Enhancement** — `GlobalContext.addToCart(product, quantity = 1)` now accepts a quantity (backward-compatible). Optimistic revert subtracts the right amount on failure.
+- **Feature: functional Luxury Checkout page** — `pages/LuxuryCheckout.jsx` rewritten from scratch:
+  - Was a non-functional mock — no state, no onClick, no submission, $ instead of ₹, missing required `state`, `country`, `phone` fields
+  - Now: controlled form, light validation, auto-fills email/name/phone from logged-in user
+  - Adds missing required fields and a Country select (India / UK / US / UAE / SG / AU / CA)
+  - Payment method picker — COD enabled, Card disabled with "Coming Soon" label
+  - INR formatting via `Intl.NumberFormat` (₹) throughout summary
+  - 18% GST line item; shipping shown as "Complimentary"
+  - Submits to `POST /api/orders` with proper payload, surfaces backend validation errors
+  - Auth guard (redirects to `/login` if not signed in) and empty-cart guard
+  - Animated success state showing order reference + total, with "View Orders" / "Continue Browsing" CTAs
+- **Cart Drawer polish** — `components/common/CartDrawer.jsx` switched $ → ₹, added remove-item trash button, disabled "Proceed to Checkout" when empty, added `data-testid`s.
+- **`GlobalContext.clearCart`** — new function added (server-synced) and exposed via context; used after successful order placement.
 - **Files added**: `client/src/config.js`, `client/.env.example`, `client/src/styles/ProductDetailLuxury.css`.
 - **Lint**: full `client/src/**/*.{js,jsx}` ESLint pass — **no issues**.
 
