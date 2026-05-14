@@ -93,9 +93,9 @@ const LandingPage = () => {
                 <div className="axm-nav__logo" onClick={() => navigate('/')}>AWIK</div>
                 <nav className="axm-nav__links">
                     <button onClick={() => navigate('/women')}>SHOP</button>
-                    <button onClick={() => navigate('/maison')}>ABOUT</button>
-                    <button onClick={() => navigate('/studio')}>STUDIO</button>
-                    <button onClick={() => navigate('/entrance')}>JOURNAL</button>
+                    <button onClick={() => navigate('/men')}>MEN</button>
+                    <button onClick={() => navigate('/kids')}>KIDS</button>
+                    <button onClick={() => navigate('/search')}>NEW ARRIVALS</button>
                 </nav>
                 <div className="axm-nav__icons">
                     <button className="axm-icon-btn" title="Search" onClick={() => navigate('/search')}>
@@ -104,7 +104,7 @@ const LandingPage = () => {
                     <button className="axm-icon-btn" title="Account" onClick={() => navigate(user ? '/profile' : '/login')}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </button>
-                    <button className="axm-icon-btn axm-cart-btn" title="Cart" onClick={() => toggleCart(true)}>
+                    <button className="axm-icon-btn axm-cart-btn" title="Cart" onClick={() => { if (typeof toggleCart === 'function') toggleCart(true); }}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                         <span className="axm-cart-dot" />
                     </button>
@@ -115,8 +115,7 @@ const LandingPage = () => {
             <section className="axm-hero">
                 {HERO_SLIDES.map((s, i) => (
                     <div key={i} className={`axm-hero__slide ${i === heroIndex ? 'active' : ''}`}>
-                        <img src={s.img} alt={s.label}
-                            onError={e => e.target.src = FALLBACK[i]} />
+                        <img src={s.img} alt={s.label} onError={e => { e.target.src = FALLBACK[i]; }} />
                         <div className="axm-hero__overlay" />
                     </div>
                 ))}
@@ -143,8 +142,7 @@ const LandingPage = () => {
                     {HERO_SLIDES.map((s, i) => (
                         <div key={i} className={`axm-thumb ${i === heroIndex ? 'active' : ''}`}
                             onClick={() => setHeroIndex(i)}>
-                            <img src={s.img} alt={s.label}
-                                onError={e => e.target.src = FALLBACK[i]} />
+                            <img src={s.img} alt={s.label} onError={e => { e.target.src = FALLBACK[i]; }} />
                         </div>
                     ))}
                 </div>
@@ -160,18 +158,15 @@ const LandingPage = () => {
             {/* ── New Arrivals Bento ───────────────── */}
             <section className="axm-section">
                 <div className="axm-bento">
-                    {/* Left: big feature panel */}
                     <div className="axm-bento__feature" onClick={() => navigate('/women')}>
                         <img src="https://images.unsplash.com/photo-1614179689702-355944cd0918?w=900&q=85"
-                            alt="New Arrivals"
-                            onError={e => e.target.src = FALLBACK[2]} />
+                            alt="New Arrivals" onError={e => { e.target.src = FALLBACK[2]; }} />
                         <div className="axm-bento__feature-text">
                             <span className="axm-label">SHOP NOW ↗</span>
                             <h2 className="axm-bento__big-title">NEW<br />ARRIVALS</h2>
                         </div>
                     </div>
 
-                    {/* Right: 4 product cards */}
                     <div className="axm-bento__grid">
                         {(products.length > 0 ? products.slice(0, 4) : Array(4).fill(null)).map((product, i) => (
                             <div key={i} className="axm-product-card"
@@ -181,7 +176,7 @@ const LandingPage = () => {
                                         src={product?.images?.[0]?.url && !product.images[0].url.includes('placeholder')
                                             ? product.images[0].url : FALLBACK[i % FALLBACK.length]}
                                         alt={product?.name || 'Product'}
-                                        onError={e => e.target.src = FALLBACK[i % FALLBACK.length]}
+                                        onError={e => { e.target.src = FALLBACK[i % FALLBACK.length]; }}
                                     />
                                     {product && <span className="axm-new-badge">NEW</span>}
                                 </div>
@@ -211,7 +206,7 @@ const LandingPage = () => {
                                         src={product?.images?.[0]?.url && !product.images[0].url.includes('placeholder')
                                             ? product.images[0].url : FALLBACK[(i + 2) % FALLBACK.length]}
                                         alt={product?.name || 'Product'}
-                                        onError={e => e.target.src = FALLBACK[(i + 2) % FALLBACK.length]}
+                                        onError={e => { e.target.src = FALLBACK[(i + 2) % FALLBACK.length]; }}
                                     />
                                     {i === 0 && <span className="axm-new-badge axm-sale-badge">SALE</span>}
                                     <span className="axm-new-badge" style={{ left: 'auto', right: '0.75rem' }}>BEST SELLER</span>
@@ -230,8 +225,7 @@ const LandingPage = () => {
 
                     <div className="axm-bento__feature" onClick={() => navigate('/women')}>
                         <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=900&q=85"
-                            alt="Best Sellers"
-                            onError={e => e.target.src = FALLBACK[1]} />
+                            alt="Best Sellers" onError={e => { e.target.src = FALLBACK[1]; }} />
                         <div className="axm-bento__feature-text">
                             <span className="axm-label">SHOP NOW ↗</span>
                             <h2 className="axm-bento__big-title">BEST<br />SELLERS</h2>
@@ -244,20 +238,19 @@ const LandingPage = () => {
             <section className="axm-cat-strip">
                 <div className="axm-marquee-wrap axm-marquee-wrap--large">
                     <div className="axm-marquee axm-marquee--big">
-                        <span>WOMEN &nbsp; TOPS &nbsp; BOTTOMS &nbsp; SAREES &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; LEHENGAS &nbsp; ACCESSORIES &nbsp; </span>
-                        <span>WOMEN &nbsp; TOPS &nbsp; BOTTOMS &nbsp; SAREES &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; LEHENGAS &nbsp; ACCESSORIES &nbsp; </span>
+                        <span>WOMEN &nbsp; SAREES &nbsp; LEHENGAS &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; ETHNIC &nbsp; ACCESSORIES &nbsp; </span>
+                        <span>WOMEN &nbsp; SAREES &nbsp; LEHENGAS &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; ETHNIC &nbsp; ACCESSORIES &nbsp; </span>
                     </div>
                 </div>
                 <div className="axm-cat-grid">
                     {[
                         { name: 'WOMEN', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=80', link: '/women' },
-                        { name: 'MEN', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80', link: '/men' },
-                        { name: 'KIDS', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80', link: '/kids' },
-                        { name: 'STUDIO', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=600&q=80', link: '/studio' },
+                        { name: 'MEN',   sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80', link: '/men' },
+                        { name: 'KIDS',  sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80', link: '/kids' },
+                        { name: 'NEW',   sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=600&q=80', link: '/search' },
                     ].map(cat => (
                         <div key={cat.name} className="axm-cat-item" onClick={() => navigate(cat.link)}>
-                            <img src={cat.img} alt={cat.name}
-                                onError={e => e.target.src = FALLBACK[0]} />
+                            <img src={cat.img} alt={cat.name} onError={e => { e.target.src = FALLBACK[0]; }} />
                             <div className="axm-cat-item__footer">
                                 <span className="axm-cat-item__name">{cat.name}</span>
                                 <span className="axm-cat-item__cta">{cat.sub}</span>
