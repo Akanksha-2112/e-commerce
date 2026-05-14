@@ -81,14 +81,16 @@ export const GlobalProvider = ({ children }) => {
         setIsCartOpen(isOpen);
     };
 
-    const addToCart = async (product) => {
+    const addToCart = async (product, quantity = 1) => {
+        const qty = Math.max(1, parseInt(quantity, 10) || 1);
+
         // Optimistic Update
         setCart((prev) => {
             const newCart = { ...prev };
             if (newCart[product.id]) {
-                newCart[product.id].quantity += 1;
+                newCart[product.id].quantity += qty;
             } else {
-                newCart[product.id] = { ...product, quantity: 1 };
+                newCart[product.id] = { ...product, quantity: qty };
             }
             return newCart;
         });
@@ -100,7 +102,7 @@ export const GlobalProvider = ({ children }) => {
                 // capture the cartItemId needed for future remove/update calls.
                 const { data: cartData } = await axios.post(`${API_BASE}/api/cart`, {
                     productId: product.id,
-                    quantity: 1,
+                    quantity: qty,
                     size: product.size || 'M', // Default size if not specified
                     color: product.color || 'Black'
                 }, config);
@@ -111,8 +113,8 @@ export const GlobalProvider = ({ children }) => {
                 setCart((prev) => {
                     const reverted = { ...prev };
                     if (reverted[product.id]) {
-                        if (reverted[product.id].quantity > 1) {
-                            reverted[product.id].quantity -= 1;
+                        if (reverted[product.id].quantity > qty) {
+                            reverted[product.id].quantity -= qty;
                         } else {
                             delete reverted[product.id];
                         }
