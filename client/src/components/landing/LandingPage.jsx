@@ -3,279 +3,280 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../../context/GlobalContext';
 import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
-import SovereignTabs from '../common/SovereignTabs';
-import './LandingPage.css';
 import '../../styles/BoutiqueLanding.css';
+
+/* ── Hero slides ─────────────────────────── */
+const HERO_SLIDES = [
+    {
+        label: 'WOMEN',
+        title: 'THE NEW\nSEASON',
+        subtitle: 'EXQUISITE ETHNIC WEAR CRAFTED FOR THE EXTRAORDINARY WOMAN. HERITAGE MEETS HAUTE COUTURE.',
+        img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&q=90',
+        cta: '/women',
+    },
+    {
+        label: 'MEN',
+        title: 'SOVEREIGN\nSTYLE',
+        subtitle: 'PRECISION TAILORING AND PREMIUM FABRICS. DESIGNED FOR THE MODERN MAN WITH A CLASSIC SOUL.',
+        img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=1600&q=90',
+        cta: '/men',
+    },
+    {
+        label: 'KIDS',
+        title: 'LITTLE\nROYALS',
+        subtitle: 'CELEBRATE EVERY OCCASION WITH VIBRANT, COMFORTABLE ETHNIC WEAR FOR YOUR LITTLE ONES.',
+        img: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=1600&q=90',
+        cta: '/kids',
+    },
+];
+
+const MARQUEE_TEXT = 'WOMEN · MEN · KIDS · SAREES · LEHENGAS · KURTAS · SHERWANIS · NEW ARRIVALS · BEST SELLERS · ';
 
 const LandingPage = () => {
     const navigate = useNavigate();
-    const { toggleSidebar, addToCart } = useGlobal();
+    const { toggleCart } = useGlobal();
     const { user } = useContext(AuthContext);
 
     const [products, setProducts] = useState([]);
-    const [loadingProducts, setLoadingProducts] = useState(false);
+    const [heroIndex, setHeroIndex] = useState(0);
     const [firstName, setFirstName] = useState('');
-    const [activeCategory, setActiveCategory] = useState('All');
-    const [scrolled, setScrolled] = useState(false);
-
-    const categories = ['All', 'Women', 'Men', 'Kids'];
-
-    useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 60);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     useEffect(() => {
         if (user) {
-            const name = user.firstName || user.name?.split(' ')[0] || 'Member';
-            setFirstName(name);
+            setFirstName(user.firstName || user.name?.split(' ')[0] || 'Member');
         }
-        fetchCollection();
+        fetchProducts();
     }, [user]);
 
-    const fetchCollection = async () => {
-        setLoadingProducts(true);
+    /* Auto-advance hero */
+    useEffect(() => {
+        const t = setInterval(() => setHeroIndex(i => (i + 1) % HERO_SLIDES.length), 5000);
+        return () => clearInterval(t);
+    }, []);
+
+    const fetchProducts = async () => {
         try {
             const url = `${process.env.REACT_APP_API_URL || 'https://e-commerce-2e5z.onrender.com/api'}/products`;
-            const response = await axios.get(url);
-            if (response.data && response.data.products) {
-                setProducts(response.data.products.slice(0, 9));
-            } else if (Array.isArray(response.data)) {
-                setProducts(response.data.slice(0, 9));
-            }
-        } catch (error) {
-            console.error("Error fetching collection", error);
+            const { data } = await axios.get(url);
+            const list = data.products || (Array.isArray(data) ? data : []);
+            setProducts(list.slice(0, 6));
+        } catch (e) {
+            console.error(e);
         }
-        setLoadingProducts(false);
     };
 
-    const handleAddToBag = (e, product) => {
-        e.stopPropagation();
-        addToCart({
-            id: product._id,
-            name: product.name,
-            price: product.price,
-            image: product.images?.[0]?.url,
-            size: product.sizes?.[0] || 'M',
-            color: product.colors?.[0] || 'Standard'
-        });
-    };
+    const formatPrice = p => new Intl.NumberFormat('en-IN', {
+        style: 'currency', currency: 'INR', maximumFractionDigits: 0,
+    }).format(p);
 
-    const formatPrice = (price) => new Intl.NumberFormat('en-IN', {
-        style: 'currency', currency: 'INR', maximumFractionDigits: 0
-    }).format(price);
-
-    const fallbackImages = [
+    const FALLBACK = [
         'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=80',
         'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80',
         'https://images.unsplash.com/photo-1614179689702-355944cd0918?w=600&q=80',
-        'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80',
         'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80',
+        'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80',
         'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=600&q=80',
     ];
 
-    const getProductImage = (product, index) => {
-        const img = product.images?.[0]?.url;
-        if (img && !img.includes('placeholder')) return img;
-        return fallbackImages[index % fallbackImages.length];
-    };
+    const slide = HERO_SLIDES[heroIndex];
 
-    // --- GUEST VIEW ---
-    if (!user) {
-        return (
-            <div className="luxury-landing">
-                {/* Full-screen Hero */}
-                <section className="hero-full">
-                    <div className="hero-bg-overlay" />
-                    <img src="/hero-bg.png" alt="" className="hero-bg-img"
-                        onError={(e) => { e.target.style.display = 'none'; }} />
-
-                    <nav className={`luxury-nav ${scrolled ? 'luxury-nav--scrolled' : ''}`}>
-                        <button className="luxury-nav__menu" onClick={() => toggleSidebar(true)}>
-                            <span /><span /><span />
-                        </button>
-                        <div className="luxury-nav__logo">
-                            <img src={require('../../assets/images/logo.png')} alt="AWIK SPECTRUM" />
-                        </div>
-                        <button className="luxury-nav__signin" onClick={() => navigate('/login')}>
-                            Sign In
-                        </button>
-                    </nav>
-
-                    <div className="hero-content">
-                        <p className="hero-eyebrow">Est. 2026 &nbsp;·&nbsp; India</p>
-                        <h1 className="hero-title">
-                            The Sovereign<br />
-                            <em>Collection</em>
-                        </h1>
-                        <p className="hero-subtitle">
-                            Couture rooted in tradition, crafted for the extraordinary.
-                        </p>
-                        <div className="hero-actions">
-                            <button className="btn-primary" onClick={() => navigate('/register')}>
-                                Enter the Maison
-                            </button>
-                            <button className="btn-ghost" onClick={() => navigate('/women')}>
-                                Explore Collections
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="hero-scroll-indicator">
-                        <div className="scroll-line" />
-                        <span>Scroll</span>
-                    </div>
-                </section>
-
-                {/* Category Showcase */}
-                <section className="category-showcase">
-                    <div className="section-header">
-                        <p className="section-eyebrow">Shop by Category</p>
-                        <h2 className="section-title">Every Story, Every Style</h2>
-                    </div>
-                    <div className="category-grid">
-                        {[
-                            { name: 'Women', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80', link: '/women' },
-                            { name: 'Men',   img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&q=80', link: '/men' },
-                            { name: 'Kids',  img: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80', link: '/kids' },
-                        ].map(cat => (
-                            <div key={cat.name} className="category-card" onClick={() => navigate(cat.link)}>
-                                <img src={cat.img} alt={cat.name} className="category-card__img" />
-                                <div className="category-card__overlay">
-                                    <h3 className="category-card__name">{cat.name}</h3>
-                                    <span className="category-card__cta">Shop Now →</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Brand Story */}
-                <section className="brand-story">
-                    <div className="brand-story__text">
-                        <p className="section-eyebrow">Our Philosophy</p>
-                        <h2 className="section-title">Where Heritage<br />Meets Haute Couture</h2>
-                        <p className="brand-story__body">
-                            AWIK SPECTRUM was born from a singular vision — to celebrate India's rich textile legacy with a modern, global eye. Each piece is a conversation between centuries-old craft and contemporary design.
-                        </p>
-                        <button className="btn-outline" onClick={() => navigate('/maison')}>
-                            Discover Our Story
-                        </button>
-                    </div>
-                    <div className="brand-story__visual">
-                        <img src="https://images.unsplash.com/photo-1614179689702-355944cd0918?w=700&q=80" alt="Craftsmanship" />
-                    </div>
-                </section>
-
-                {/* CTA Banner */}
-                <section className="cta-banner">
-                    <div className="cta-banner__inner">
-                        <h2>Become a Member of the Maison</h2>
-                        <p>Unlock exclusive access to our private collection, early drops, and curated events.</p>
-                        <button className="btn-gold" onClick={() => navigate('/register')}>
-                            Request Invitation
-                        </button>
-                    </div>
-                </section>
-            </div>
-        );
-    }
-
-    // --- MEMBER VIEW ---
     return (
-        <div className="member-landing">
-            <nav className={`luxury-nav luxury-nav--light ${scrolled ? 'luxury-nav--scrolled-light' : ''}`}>
-                <button className="luxury-nav__menu luxury-nav__menu--dark" onClick={() => toggleSidebar(true)}>
-                    <span /><span /><span />
-                </button>
-                <div className="luxury-nav__logo">
-                    <img src={require('../../assets/images/logo.png')} alt="AWIK SPECTRUM" style={{ filter: 'brightness(0)' }} />
+        <div className="axm-root">
+
+            {/* ── Announcement Bar ─────────────────── */}
+            <div className="axm-announce">
+                <span>FREE SHIPPING ON ORDERS ABOVE ₹2,000 &nbsp;|&nbsp; NEW COLLECTION JUST DROPPED &nbsp;|&nbsp; FREE RETURNS WITHIN 30 DAYS</span>
+            </div>
+
+            {/* ── Navbar ───────────────────────────── */}
+            <header className="axm-nav">
+                <div className="axm-nav__logo" onClick={() => navigate('/')}>AWIK</div>
+                <nav className="axm-nav__links">
+                    <button onClick={() => navigate('/women')}>SHOP</button>
+                    <button onClick={() => navigate('/maison')}>ABOUT</button>
+                    <button onClick={() => navigate('/studio')}>STUDIO</button>
+                    <button onClick={() => navigate('/entrance')}>JOURNAL</button>
+                </nav>
+                <div className="axm-nav__icons">
+                    <button className="axm-icon-btn" title="Search" onClick={() => navigate('/search')}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </button>
+                    <button className="axm-icon-btn" title="Account" onClick={() => navigate(user ? '/profile' : '/login')}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </button>
+                    <button className="axm-icon-btn axm-cart-btn" title="Cart" onClick={() => toggleCart(true)}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        <span className="axm-cart-dot" />
+                    </button>
                 </div>
-                <button className="luxury-nav__signin luxury-nav__signin--dark" onClick={() => navigate('/profile')}>
-                    Hello, {firstName}
-                </button>
-            </nav>
+            </header>
 
-            <SovereignTabs />
+            {/* ── Hero ─────────────────────────────── */}
+            <section className="axm-hero">
+                {HERO_SLIDES.map((s, i) => (
+                    <div key={i} className={`axm-hero__slide ${i === heroIndex ? 'active' : ''}`}>
+                        <img src={s.img} alt={s.label}
+                            onError={e => e.target.src = FALLBACK[i]} />
+                        <div className="axm-hero__overlay" />
+                    </div>
+                ))}
 
-            {/* Member Hero */}
-            <section className="member-hero">
-                <div className="member-hero__content">
-                    <p className="section-eyebrow" style={{ color: '#C9A84C' }}>The Private Collection</p>
-                    <h1 className="member-hero__title">
-                        Welcome back,<br /><em>{firstName}.</em>
-                    </h1>
-                    <p className="member-hero__subtitle">Your curated selection awaits.</p>
+                <div className="axm-hero__content">
+                    <span className="axm-hero__label">{slide.label}</span>
+                    <h1 className="axm-hero__title">{slide.title}</h1>
+                    <p className="axm-hero__sub">{slide.subtitle}</p>
+                    <button className="axm-btn-outline-white" onClick={() => navigate(slide.cta)}>
+                        SHOP NOW
+                    </button>
+                </div>
+
+                {/* Slide dots */}
+                <div className="axm-hero__dots">
+                    {HERO_SLIDES.map((_, i) => (
+                        <button key={i} className={`axm-dot ${i === heroIndex ? 'active' : ''}`}
+                            onClick={() => setHeroIndex(i)} />
+                    ))}
+                </div>
+
+                {/* Thumbnail previews */}
+                <div className="axm-hero__thumbs">
+                    {HERO_SLIDES.map((s, i) => (
+                        <div key={i} className={`axm-thumb ${i === heroIndex ? 'active' : ''}`}
+                            onClick={() => setHeroIndex(i)}>
+                            <img src={s.img} alt={s.label}
+                                onError={e => e.target.src = FALLBACK[i]} />
+                        </div>
+                    ))}
                 </div>
             </section>
 
-            {/* Category Filter */}
-            <div className="member-filters">
-                {categories.map(cat => (
-                    <button
-                        key={cat}
-                        className={`filter-pill ${activeCategory === cat ? 'filter-pill--active' : ''}`}
-                        onClick={() => setActiveCategory(cat)}
-                    >
-                        {cat}
-                    </button>
-                ))}
+            {/* ── Marquee ──────────────────────────── */}
+            <div className="axm-marquee-wrap">
+                <div className="axm-marquee">
+                    <span>{MARQUEE_TEXT}{MARQUEE_TEXT}</span>
+                </div>
             </div>
 
-            {/* Product Grid */}
-            <section className="member-collection">
-                {loadingProducts ? (
-                    <div className="loading-state">
-                        <div className="loading-spinner" />
-                        <p>Curating your collection...</p>
+            {/* ── New Arrivals Bento ───────────────── */}
+            <section className="axm-section">
+                <div className="axm-bento">
+                    {/* Left: big feature panel */}
+                    <div className="axm-bento__feature" onClick={() => navigate('/women')}>
+                        <img src="https://images.unsplash.com/photo-1614179689702-355944cd0918?w=900&q=85"
+                            alt="New Arrivals"
+                            onError={e => e.target.src = FALLBACK[2]} />
+                        <div className="axm-bento__feature-text">
+                            <span className="axm-label">SHOP NOW ↗</span>
+                            <h2 className="axm-bento__big-title">NEW<br />ARRIVALS</h2>
+                        </div>
                     </div>
-                ) : products.length === 0 ? (
-                    <div className="empty-state">
-                        <p>Your curator is updating the collection. Check back shortly.</p>
-                        <button className="btn-outline" onClick={fetchCollection}>Refresh</button>
-                    </div>
-                ) : (
-                    <div className="product-grid-luxury">
-                        {products.map((product, index) => (
-                            <div
-                                key={product._id}
-                                className="product-card-luxury"
-                                onClick={() => navigate(`/product/${product._id}`)}
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <div className="product-card-luxury__image">
+
+                    {/* Right: 4 product cards */}
+                    <div className="axm-bento__grid">
+                        {(products.length > 0 ? products.slice(0, 4) : Array(4).fill(null)).map((product, i) => (
+                            <div key={i} className="axm-product-card"
+                                onClick={() => product && navigate(`/product/${product._id}`)}>
+                                <div className="axm-product-card__img-wrap">
                                     <img
-                                        src={getProductImage(product, index)}
-                                        alt={product.name}
-                                        onError={(e) => { e.target.src = fallbackImages[index % fallbackImages.length]; }}
+                                        src={product?.images?.[0]?.url && !product.images[0].url.includes('placeholder')
+                                            ? product.images[0].url : FALLBACK[i % FALLBACK.length]}
+                                        alt={product?.name || 'Product'}
+                                        onError={e => e.target.src = FALLBACK[i % FALLBACK.length]}
                                     />
-                                    <div className="product-card-luxury__badge">
-                                        {product.subcategory || 'New Arrival'}
-                                    </div>
-                                    <button
-                                        className="product-card-luxury__bag-btn"
-                                        onClick={(e) => handleAddToBag(e, product)}
-                                    >
-                                        + Add to Bag
-                                    </button>
+                                    {product && <span className="axm-new-badge">NEW</span>}
                                 </div>
-                                <div className="product-card-luxury__info">
-                                    <span className="product-card-luxury__brand">AWIK MAISON</span>
-                                    <h3 className="product-card-luxury__name">{product.name}</h3>
-                                    <div className="product-card-luxury__footer">
-                                        <span className="product-card-luxury__price">{formatPrice(product.price)}</span>
-                                        <div className="product-card-luxury__colors">
-                                            {product.colors?.slice(0, 3).map(c => (
-                                                <span key={c} className="color-dot" title={c} />
-                                            ))}
-                                        </div>
+                                <div className="axm-product-card__info">
+                                    {product?.subcategory && <span className="axm-card-cat">{product.subcategory.toUpperCase()}</span>}
+                                    <div className="axm-card-bottom">
+                                        <span className="axm-card-name">{product?.name || 'Coming Soon'}</span>
+                                        <span className="axm-card-arrow">↗</span>
                                     </div>
+                                    {product && <span className="axm-card-price">{formatPrice(product.price)}</span>}
                                 </div>
                             </div>
                         ))}
                     </div>
-                )}
+                </div>
+            </section>
+
+            {/* ── Best Sellers Bento (reversed) ────── */}
+            <section className="axm-section">
+                <div className="axm-bento axm-bento--reversed">
+                    <div className="axm-bento__grid">
+                        {(products.length > 2 ? products.slice(2, 6) : Array(4).fill(null)).map((product, i) => (
+                            <div key={i} className="axm-product-card"
+                                onClick={() => product && navigate(`/product/${product._id}`)}>
+                                <div className="axm-product-card__img-wrap">
+                                    <img
+                                        src={product?.images?.[0]?.url && !product.images[0].url.includes('placeholder')
+                                            ? product.images[0].url : FALLBACK[(i + 2) % FALLBACK.length]}
+                                        alt={product?.name || 'Product'}
+                                        onError={e => e.target.src = FALLBACK[(i + 2) % FALLBACK.length]}
+                                    />
+                                    {i === 0 && <span className="axm-new-badge axm-sale-badge">SALE</span>}
+                                    <span className="axm-new-badge" style={{ left: 'auto', right: '0.75rem' }}>BEST SELLER</span>
+                                </div>
+                                <div className="axm-product-card__info">
+                                    {product?.subcategory && <span className="axm-card-cat">{product.subcategory.toUpperCase()}</span>}
+                                    <div className="axm-card-bottom">
+                                        <span className="axm-card-name">{product?.name || 'Coming Soon'}</span>
+                                        <span className="axm-card-arrow">↗</span>
+                                    </div>
+                                    {product && <span className="axm-card-price">{formatPrice(product.price)}</span>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="axm-bento__feature" onClick={() => navigate('/women')}>
+                        <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=900&q=85"
+                            alt="Best Sellers"
+                            onError={e => e.target.src = FALLBACK[1]} />
+                        <div className="axm-bento__feature-text">
+                            <span className="axm-label">SHOP NOW ↗</span>
+                            <h2 className="axm-bento__big-title">BEST<br />SELLERS</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Category Strip ───────────────────── */}
+            <section className="axm-cat-strip">
+                <div className="axm-marquee-wrap axm-marquee-wrap--large">
+                    <div className="axm-marquee axm-marquee--big">
+                        <span>WOMEN &nbsp; TOPS &nbsp; BOTTOMS &nbsp; SAREES &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; LEHENGAS &nbsp; ACCESSORIES &nbsp; </span>
+                        <span>WOMEN &nbsp; TOPS &nbsp; BOTTOMS &nbsp; SAREES &nbsp; MEN &nbsp; SHERWANIS &nbsp; KIDS &nbsp; LEHENGAS &nbsp; ACCESSORIES &nbsp; </span>
+                    </div>
+                </div>
+                <div className="axm-cat-grid">
+                    {[
+                        { name: 'WOMEN', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=80', link: '/women' },
+                        { name: 'MEN', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80', link: '/men' },
+                        { name: 'KIDS', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80', link: '/kids' },
+                        { name: 'STUDIO', sub: 'SHOP NOW ↗', img: 'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=600&q=80', link: '/studio' },
+                    ].map(cat => (
+                        <div key={cat.name} className="axm-cat-item" onClick={() => navigate(cat.link)}>
+                            <img src={cat.img} alt={cat.name}
+                                onError={e => e.target.src = FALLBACK[0]} />
+                            <div className="axm-cat-item__footer">
+                                <span className="axm-cat-item__name">{cat.name}</span>
+                                <span className="axm-cat-item__cta">{cat.sub}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── Footer CTA ───────────────────────── */}
+            <section className="axm-footer-cta">
+                <p className="axm-footer-cta__eyebrow">AWIK SPECTRUM</p>
+                <h2 className="axm-footer-cta__title">JOIN THE MAISON</h2>
+                <p className="axm-footer-cta__sub">
+                    Exclusive access. Early drops. Members-only pricing.
+                </p>
+                <button className="axm-btn-white" onClick={() => navigate(user ? '/profile' : '/register')}>
+                    {user ? `WELCOME, ${firstName.toUpperCase()}` : 'BECOME A MEMBER'}
+                </button>
             </section>
         </div>
     );
