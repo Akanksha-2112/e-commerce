@@ -37,157 +37,116 @@ const LandingPage = () => {
     const { toggleCart } = useGlobal();
     const { user } = useContext(AuthContext);
 
-    const [products, setProducts] = useState([]);
-    const [heroIndex, setHeroIndex] = useState(0);
-    const [firstName, setFirstName] = useState('');
+    const { toggleCart, toggleSidebar } = useGlobal();
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
-        if (user) {
-            setFirstName(user.firstName || user.name?.split(' ')[0] || 'Member');
-        }
-        fetchProducts();
-    }, [user]);
-
-    /* Auto-advance hero */
-    useEffect(() => {
-        const t = setInterval(() => setHeroIndex(i => (i + 1) % HERO_SLIDES.length), 5000);
-        return () => clearInterval(t);
+        const timer = setInterval(() => {
+            setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length);
+        }, 6000);
+        return () => clearInterval(timer);
     }, []);
 
-    const fetchProducts = async () => {
-        try {
-            const url = `${process.env.REACT_APP_API_URL || 'https://e-commerce-2e5z.onrender.com/api'}/products`;
-            const { data } = await axios.get(url);
-            const list = data.products || (Array.isArray(data) ? data : []);
-            setProducts(list.slice(0, 6));
-        } catch (e) {
-            console.error(e);
-        }
-    };
+    const renderHeader = () => (
+        <>
+            <div className="axm-announce">
+                Complimentary Shipping on all orders above ₹5,000 • 14-Day Returns • Concierge Styling Available
+            </div>
+            <nav className="axm-nav">
+                <div className="axm-nav__logo" onClick={() => navigate('/')}>
+                    AWIK <span>SPECTRUM</span>
+                </div>
+                <div className="axm-nav__links">
+                    <button onClick={() => navigate('/women')}>Women</button>
+                    <button onClick={() => navigate('/men')}>Men</button>
+                    <button onClick={() => navigate('/kids')}>Kids</button>
+                    <button onClick={() => navigate('/maison')}>The Maison</button>
+                </div>
+                <div className="axm-nav__icons">
+                    <button className="axm-icon-btn" onClick={() => navigate('/profile')}><FaUser size={16} /></button>
+                    <button className="axm-icon-btn axm-cart-btn" onClick={() => toggleCart(true)}>
+                        <FaShoppingBag size={16} />
+                        <span className="axm-cart-dot" />
+                    </button>
+                    <button className="axm-icon-btn" onClick={() => navigate('/wishlist')}>
+                        <FaHeart size={16} />
+                    </button>
+                    <button className="axm-icon-btn" style={{ marginLeft: '0.5rem' }} onClick={() => toggleSidebar(true)}>
+                        <FaBars size={18} />
+                    </button>
+                </div>
+            </nav>
+        </>
+    );
 
-    const formatPrice = p => new Intl.NumberFormat('en-IN', {
-        style: 'currency', currency: 'INR', maximumFractionDigits: 0,
-    }).format(p);
-
-    const FALLBACK = [
-        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=80',
-        'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80',
-        'https://images.unsplash.com/photo-1614179689702-355944cd0918?w=600&q=80',
-        'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80',
-        'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80',
-        'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=600&q=80',
-    ];
-
-    const slide = HERO_SLIDES[heroIndex];
+    const renderHero = () => (
+        <div className="axm-hero">
+            {HERO_SLIDES.map((slide, idx) => (
+                <div key={idx} className={`axm-hero__slide ${currentSlide === idx ? 'active' : ''}`}>
+                    <img src={slide.image} alt={slide.title} />
+                    <div className="axm-hero__overlay" />
+                    {currentSlide === idx && (
+                        <motion.div 
+                            className="axm-hero__content"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                        >
+                            <span className="axm-hero__label">AWIK Studio</span>
+                            <h1 className="axm-hero__title" dangerouslySetInnerHTML={{ __html: slide.title }} />
+                            <p className="axm-hero__sub">{slide.sub}</p>
+                            <button className="axm-btn-morphism" onClick={() => navigate('/women')}>
+                                <span>Discover Collection</span>
+                                <FaArrowRight size={14} style={{ position: 'relative', zIndex: 1 }} />
+                            </button>
+                        </motion.div>
+                    )}
+                </div>
+            ))}
+            <div className="axm-hero__dots">
+                {HERO_SLIDES.map((_, idx) => (
+                    <button 
+                        key={idx} 
+                        className={`axm-dot ${currentSlide === idx ? 'active' : ''}`}
+                        onClick={() => setCurrentSlide(idx)}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 
     return (
         <div className="axm-root">
+            {renderHeader()}
+            {renderHero()}
 
-            {/* ── Announcement Bar ─────────────────── */}
-            <div className="axm-announce">
-                <span>FREE SHIPPING ON ORDERS ABOVE ₹2,000 &nbsp;|&nbsp; NEW COLLECTION JUST DROPPED &nbsp;|&nbsp; FREE RETURNS WITHIN 30 DAYS</span>
-            </div>
-
-            {/* ── Navbar ───────────────────────────── */}
-            <header className="axm-nav">
-                <div className="axm-nav__logo" onClick={() => navigate('/')}>AWIK</div>
-                <nav className="axm-nav__links">
-                    <button onClick={() => navigate('/women')}>SHOP</button>
-                    <button onClick={() => navigate('/men')}>MEN</button>
-                    <button onClick={() => navigate('/kids')}>KIDS</button>
-                    <button onClick={() => navigate('/search')}>NEW ARRIVALS</button>
-                </nav>
-                <div className="axm-nav__icons">
-                    <button className="axm-icon-btn" title="Search" onClick={() => navigate('/search')}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    </button>
-                    <button className="axm-icon-btn" title="Account" onClick={() => navigate(user ? '/profile' : '/login')}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </button>
-                    <button className="axm-icon-btn axm-cart-btn" title="Cart" onClick={() => { if (typeof toggleCart === 'function') toggleCart(true); }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        <span className="axm-cart-dot" />
-                    </button>
-                </div>
-            </header>
-
-            {/* ── Hero ─────────────────────────────── */}
-            <section className="axm-hero">
-                {HERO_SLIDES.map((s, i) => (
-                    <div key={i} className={`axm-hero__slide ${i === heroIndex ? 'active' : ''}`}>
-                        <img src={s.img} alt={s.label} onError={e => { e.target.src = FALLBACK[i]; }} />
-                        <div className="axm-hero__overlay" />
-                    </div>
-                ))}
-
-                <div className="axm-hero__content">
-                    <span className="axm-hero__label">{slide.label}</span>
-                    <h1 className="axm-hero__title">{slide.title}</h1>
-                    <p className="axm-hero__sub">{slide.subtitle}</p>
-                    <button className="axm-btn-outline-white" onClick={() => navigate(slide.cta)}>
-                        SHOP NOW
-                    </button>
-                </div>
-
-                {/* Slide dots */}
-                <div className="axm-hero__dots">
-                    {HERO_SLIDES.map((_, i) => (
-                        <button key={i} className={`axm-dot ${i === heroIndex ? 'active' : ''}`}
-                            onClick={() => setHeroIndex(i)} />
-                    ))}
-                </div>
-
-                {/* Thumbnail previews */}
-                <div className="axm-hero__thumbs">
-                    {HERO_SLIDES.map((s, i) => (
-                        <div key={i} className={`axm-thumb ${i === heroIndex ? 'active' : ''}`}
-                            onClick={() => setHeroIndex(i)}>
-                            <img src={s.img} alt={s.label} onError={e => { e.target.src = FALLBACK[i]; }} />
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* ── Marquee ──────────────────────────── */}
             <div className="axm-marquee-wrap">
                 <div className="axm-marquee">
-                    <span>{MARQUEE_TEXT}{MARQUEE_TEXT}</span>
+                    <span>AWIK SPECTRUM</span>
+                    <span className="star">★</span>
+                    <span>CRAFT</span>
+                    <span className="star">★</span>
+                    <span>HERITAGE</span>
+                    <span className="star">★</span>
+                    <span>INTENTION</span>
+                    <span className="star">★</span>
+                    <span>AWIK SPECTRUM</span>
+                    <span className="star">★</span>
+                    <span>CRAFT</span>
+                    <span className="star">★</span>
+                    <span>HERITAGE</span>
+                    <span className="star">★</span>
+                    <span>INTENTION</span>
                 </div>
             </div>
 
-            {/* ── New Arrivals Bento ───────────────── */}
             <section className="axm-section">
+                <div className="axm-section-header">
+                    <span className="axm-hero__label">Curated Selection</span>
+                    <h2 className="axm-section-title">FEATURED<br/><span>PRODUCTS</span></h2>
+                </div>
+                
                 <div className="axm-bento">
-                    <div className="axm-bento__feature" onClick={() => navigate('/women')}>
-                        <img src="https://images.unsplash.com/photo-1614179689702-355944cd0918?w=900&q=85"
-                            alt="New Arrivals" onError={e => { e.target.src = FALLBACK[2]; }} />
-                        <div className="axm-bento__feature-text">
-                            <span className="axm-label">SHOP NOW ↗</span>
-                            <h2 className="axm-bento__big-title">NEW<br />ARRIVALS</h2>
-                        </div>
-                    </div>
-
-                    <div className="axm-bento__grid">
-                        {(products.length > 0 ? products.slice(0, 4) : Array(4).fill(null)).map((product, i) => (
-                            <div key={i} className="axm-product-card"
-                                onClick={() => product && navigate(`/product/${product._id}`)}>
-                                <div className="axm-product-card__img-wrap">
-                                    <img
-                                        src={product?.images?.[0]?.url && !product.images[0].url.includes('placeholder')
-                                            ? product.images[0].url : FALLBACK[i % FALLBACK.length]}
-                                        alt={product?.name || 'Product'}
-                                        onError={e => { e.target.src = FALLBACK[i % FALLBACK.length]; }}
-                                    />
-                                    {product && <span className="axm-new-badge">NEW</span>}
-                                </div>
-                                <div className="axm-product-card__info">
-                                    {product?.subcategory && <span className="axm-card-cat">{product.subcategory.toUpperCase()}</span>}
-                                    <div className="axm-card-bottom">
-                                        <span className="axm-card-name">{product?.name || 'Coming Soon'}</span>
-                                        <span className="axm-card-arrow">↗</span>
-                                    </div>
-                                    {product && <span className="axm-card-price">{formatPrice(product.price)}</span>}
-                                </div>
                             </div>
                         ))}
                     </div>
