@@ -5,6 +5,8 @@ import { useGlobal } from '../context/GlobalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 
+import { API_BASE } from '../config';
+
 // Mock Data Generator for Fallback
 const generateMockProducts = (category, subcategory) => {
     return Array.from({ length: 10 }).map((_, i) => ({
@@ -31,7 +33,7 @@ const CategoryProducts = ({ category }) => {
             setLoading(true);
             try {
                 // Fetch from real API
-                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=${category}&subcategory=${subcategory}`);
+                const { data } = await axios.get(`${API_BASE}/api/products?category=${category}&subcategory=${subcategory}`);
 
                 if (data.products && data.products.length > 0) {
                     setProducts(data.products);

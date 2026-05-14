@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaFingerprint, FaShieldAlt, FaGoogle, FaFacebook } from 'react-icons/fa';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
+import { API_BASE } from '../../config';
+
 const SignIn = () => {
   const { login, verifyOtp } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -96,11 +98,11 @@ const SignIn = () => {
 
   // Social Login Handlers
   const handleGoogleLogin = () => {
-    window.location.href = 'https://e-commerce-2e5z.onrender.com/api/auth/google';
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-    window.location.href = 'https://e-commerce-2e5z.onrender.com/api/auth/facebook';
+    window.location.href = `${API_BASE}/api/auth/facebook`;
   };
 
   return (

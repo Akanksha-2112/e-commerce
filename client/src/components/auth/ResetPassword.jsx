@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../../styles/LuxuryAuth.css';
 
+import { API_BASE } from '../../config';
+
 const ResetPassword = () => {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -33,7 +35,7 @@ const ResetPassword = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch(`https://e-commerce-2e5z.onrender.com/api/auth/reset-password/${token}`, {
+            const response = await fetch(`${API_BASE}/api/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 
+import { API_BASE } from '../config';
+
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -18,7 +20,7 @@ export const CartProvider = ({ children }) => {
   const fetchCart = async () => {
     if (!user) return;
     try {
-      const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/cart', config);
+      const { data } = await axios.get(`${API_BASE}/api/cart`, config);
       setCart(data);
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -34,7 +36,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (productId, quantity, size, color) => {
     try {
       const { data } = await axios.post(
-        'https://e-commerce-2e5z.onrender.com/api/cart',
+        `${API_BASE}/api/cart`,
         { productId, quantity, size, color },
         config
       );
@@ -48,7 +50,7 @@ export const CartProvider = ({ children }) => {
   const updateCartItem = async (itemId, quantity) => {
     try {
       const { data } = await axios.put(
-        `https://e-commerce-2e5z.onrender.com/api/cart/${itemId}`,
+        `${API_BASE}/api/cart/${itemId}`,
         { quantity },
         config
       );
@@ -60,7 +62,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (itemId) => {
     try {
-      const { data } = await axios.delete(`https://e-commerce-2e5z.onrender.com/api/cart/${itemId}`, config);
+      const { data } = await axios.delete(`${API_BASE}/api/cart/${itemId}`, config);
       setCart(data);
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -69,7 +71,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     try {
-      await axios.delete('https://e-commerce-2e5z.onrender.com/api/cart', config);
+      await axios.delete(`${API_BASE}/api/cart`, config);
       setCart({ items: [], totalPrice: 0 });
     } catch (error) {
       console.error('Error clearing cart:', error);

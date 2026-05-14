@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 
+import { API_BASE } from '../../config';
+
 const VerifyEmail = () => {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -13,7 +15,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await fetch(`https://e-commerce-2e5z.onrender.com/api/auth/verify-email/${token}`);
+                const response = await fetch(`${API_BASE}/api/auth/verify-email/${token}`);
                 const data = await response.json();
 
                 if (response.ok) {

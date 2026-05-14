@@ -3,6 +3,8 @@ import { AuthContext } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUserPlus, FaGoogle, FaFacebook } from 'react-icons/fa';
 
+import { API_BASE } from '../../config';
+
 const SignUp = () => {
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -56,11 +58,11 @@ const SignUp = () => {
 
   // Social Login Handlers
   const handleGoogleLogin = () => {
-    window.location.href = 'https://e-commerce-2e5z.onrender.com/api/auth/google';
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-    window.location.href = 'https://e-commerce-2e5z.onrender.com/api/auth/facebook';
+    window.location.href = `${API_BASE}/api/auth/facebook`;
   };
 
   return (

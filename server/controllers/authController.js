@@ -32,6 +32,16 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    // Fire-and-forget welcome email — don't block the registration response
+    // and don't fail signup if the mail service has an outage.
+    sendEmail({
+      email: user.email,
+      subject: 'Welcome to AWIK SPECTRUM',
+      html: welcomeEmail(user)
+    }).catch((err) => {
+      console.error('Welcome email failed:', err?.message || err);
+    });
+
     res.status(201).json({
       _id: user._id,
       firstName: user.firstName,

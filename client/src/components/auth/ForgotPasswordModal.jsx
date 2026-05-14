@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import './ForgotPasswordModal.css';
 
+import { API_BASE } from '../../config';
+
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
@@ -16,7 +18,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
         setMessage('');
 
         try {
-            const { data } = await axios.post('https://e-commerce-2e5z.onrender.com/api/auth/forgot-password', { email }, { timeout: 15000 });
+            const { data } = await axios.post(`${API_BASE}/api/auth/forgot-password`, { email }, { timeout: 15000 });
             setMessage(data.message || 'Password reset email sent! Please check your inbox.');
             setEmail('');
             setTimeout(() => {

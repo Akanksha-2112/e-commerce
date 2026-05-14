@@ -7,6 +7,8 @@ import SovereignTabs from '../common/SovereignTabs';
 import './LandingPage.css';
 import '../../styles/BoutiqueLanding.css';
 
+import { API_BASE } from '../../config';
+
 const LandingPage = () => {
     const navigate = useNavigate();
     const { toggleSidebar, addToCart } = useGlobal();
@@ -41,7 +43,7 @@ const LandingPage = () => {
     const fetchMemberCollection = async () => {
         setLoadingProducts(true);
         try {
-            const url = 'https://e-commerce-2e5z.onrender.com/api/products';
+            const url = `${API_BASE}/api/products`;
             const response = await axios.get(url);
             if (response.data && response.data.products) {
                 setProducts(response.data.products.slice(0, 9));

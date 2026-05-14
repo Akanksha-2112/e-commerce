@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useGlobal } from '../context/GlobalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { API_BASE } from '../config';
+
 const CollectionPage = () => {
     const { categoryId } = useParams();
     const { addToCart } = useGlobal();
@@ -16,7 +18,7 @@ const CollectionPage = () => {
         const fetchProducts = async () => {
             try {
                 // Fetch products by category ID
-                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=${categoryId}`);
+                const { data } = await axios.get(`${API_BASE}/api/products?category=${categoryId}`);
                 // Simple client-side limit to 10 as per requirement if API doesn't support limit param yet
                 setProducts(data.products.slice(0, 10));
                 setLoading(false);

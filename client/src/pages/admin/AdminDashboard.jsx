@@ -3,6 +3,8 @@ import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { API_BASE } from '../../config';
+
 const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -29,7 +31,7 @@ const AdminDashboard = () => {
 
     const fetchCategories = async () => {
         try {
-            const { data } = await axios.get('https://e-commerce-2e5z.onrender.com/api/categories');
+            const { data } = await axios.get(`${API_BASE}/api/categories`);
             console.log("Categories fetched:", data);
             setCategories(data.categories || data);
         } catch (err) {
@@ -70,7 +72,7 @@ const AdminDashboard = () => {
                 category: formData.category, // ObjectId
             };
 
-            await axios.post('https://e-commerce-2e5z.onrender.com/api/products', payload, config);
+            await axios.post(`${API_BASE}/api/products`, payload, config);
             setMessage('Product created successfully');
             setFormData({
                 name: '',
@@ -90,7 +92,7 @@ const AdminDashboard = () => {
         e.preventDefault();
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.post('https://e-commerce-2e5z.onrender.com/api/categories', { name: newCategory }, config);
+            await axios.post(`${API_BASE}/api/categories`, { name: newCategory }, config);
             setNewCategory('');
             fetchCategories(); // Refresh list
             setMessage('Category added');

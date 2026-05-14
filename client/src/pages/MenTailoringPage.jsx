@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useGlobal } from '../context/GlobalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { API_BASE } from '../config';
+
 const subcategories = ['Shirts', 'Pants', 'T-Shirts', 'Sweaters', 'Jackets'];
 
 const MenTailoringPage = () => {
@@ -19,7 +21,7 @@ const MenTailoringPage = () => {
             try {
                 // Fetch products for category 'Men' and active subcategory
                 // Using URL query params which our backend now supports
-                const { data } = await axios.get(`https://e-commerce-2e5z.onrender.com/api/products?category=Men&subcategory=${activeSubcategory}`);
+                const { data } = await axios.get(`${API_BASE}/api/products?category=Men&subcategory=${activeSubcategory}`);
                 setProducts(data.products || []);
                 setLoading(false);
             } catch (err) {

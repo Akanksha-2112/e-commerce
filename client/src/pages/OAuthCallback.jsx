@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
+import { API_BASE } from '../config';
+
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
@@ -20,7 +22,7 @@ const OAuthCallback = () => {
 
       try {
         const { data } = await axios.post(
-          'https://e-commerce-2e5z.onrender.com/api/auth/oauth/exchange',
+          `${API_BASE}/api/auth/oauth/exchange`,
           { code }
         );
 
