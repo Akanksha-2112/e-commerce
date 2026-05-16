@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/profile');
+      navigate('/');
       return { success: true };
     } catch (error) {
       const msg = error.response?.data?.message || (error.message === 'Network Error' ? 'Network Error: Cannot reach server.' : 'Registration failed');
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/profile');
+      navigate('/');
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Invalid Code' };
