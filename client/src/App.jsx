@@ -21,6 +21,7 @@ import CategoryProducts from "./pages/CategoryProducts";
 import CollectionPage from "./pages/CollectionPage";
 import OAuthCallback from "./pages/OAuthCallback";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 import { GlobalProvider } from "./context/GlobalContext";
 import LuxurySidebar from "./components/common/LuxurySidebar";
@@ -64,6 +65,7 @@ function App() {
             <Route path="/collection/:categoryId" element={<CollectionPage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </GlobalProvider>
       </AuthProvider>

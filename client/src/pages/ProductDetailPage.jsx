@@ -363,11 +363,12 @@ const ProductDetailPage = () => {
           {/* Actions - IWC Style Side-by-Side */}
           <div className="pdl-actions-row">
             <button
-              className="pdl-btn pdl-btn-secondary"
+              className={`pdl-btn pdl-btn-secondary${isWishlisted ? ' pdl-btn-wishlisted' : ''}`}
               onClick={handleWishlist}
               data-testid="pdl-wishlist-btn"
+              style={isWishlisted ? { borderColor: '#C9A84C', color: '#C9A84C' } : {}}
             >
-              {isWishlisted ? 'Saved to Wishlist' : 'Add to Wishlist'}
+              {isWishlisted ? '♥ Saved to Wishlist' : '♡ Add to Wishlist'}
             </button>
             <button
               className="pdl-btn pdl-btn-primary"
