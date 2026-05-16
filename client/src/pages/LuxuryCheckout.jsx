@@ -135,77 +135,95 @@ const LuxuryCheckout = () => {
 
   // ---------- Success view ----------
   if (success) {
-    return (
-      <motion.div
-        className="checkout-container"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '80px 40px' }}
-      >
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            width: 84,
-            height: 84,
-            borderRadius: '50%',
-            border: '1px solid #d4af37',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#d4af37',
-            marginBottom: 36,
-          }}
-        >
-          <FaCheck size={28} />
-        </motion.div>
+    const orderDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date());
+    const displayId = success.orderId ? `#LX-${String(success.orderId).slice(-6).toUpperCase()}` : 'Pending';
 
-        <h1
-          style={{
-            fontFamily: "'Libre Bodoni', 'Playfair Display', serif",
-            fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
-            letterSpacing: '0.08em',
-            color: '#1a1a1a',
-            textAlign: 'center',
-            marginBottom: 16,
-          }}
-          data-testid="checkout-success-title"
+    return (
+      <div className="premium-success-wrapper">
+        <motion.div
+          className="premium-success-box"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          Your order has been received.
-        </h1>
-        <p style={{ fontFamily: 'Montserrat, sans-serif', color: '#666', textAlign: 'center', maxWidth: 520, lineHeight: 1.8, letterSpacing: '0.04em', fontSize: '0.85rem', marginBottom: 12 }}>
-          A private confirmation is being prepared. The maison will despatch your piece within three business days.
-        </p>
-        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.7rem', letterSpacing: '0.3em', color: '#999', textTransform: 'uppercase', marginBottom: 8 }}>
-          Reference
-        </div>
-        <div style={{ fontFamily: "'Libre Bodoni', serif", fontSize: '1rem', color: '#1a1a1a', marginBottom: 8 }} data-testid="checkout-success-orderid">
-          {success.orderId ? `#${String(success.orderId).slice(-10).toUpperCase()}` : 'Pending'}
-        </div>
-        <div style={{ fontFamily: "'Libre Bodoni', serif", fontSize: '1.4rem', color: '#1a1a1a', marginBottom: 48 }}>
-          {formatINR(success.total)}
-        </div>
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button
-            onClick={() => navigate('/profile')}
-            className="checkout-complete-btn"
-            style={{ minWidth: 220, background: '#1a1a1a' }}
-            data-testid="checkout-success-view-orders"
-          >
-            View Orders
-          </button>
-          <button
-            onClick={() => navigate('/')}
-            className="checkout-complete-btn"
-            style={{ minWidth: 220, background: 'transparent', color: '#1a1a1a', border: '1px solid #1a1a1a' }}
-            data-testid="checkout-success-continue"
-          >
-            Continue Browsing
-          </button>
-        </div>
-      </motion.div>
+          <div className="ps-header">
+            <h1 data-testid="checkout-success-title">Payment Confirmed</h1>
+            <motion.div
+              className="ps-check-icon"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              <FaCheck size={24} />
+            </motion.div>
+          </div>
+
+          <div className="ps-cards">
+            {/* Left Card: Order Details */}
+            <div className="ps-card">
+              <div className="ps-card-title">Order Details</div>
+              
+              <div className="ps-row">
+                <span>Order Number</span>
+                <span className="ps-val" data-testid="checkout-success-orderid">{displayId}</span>
+              </div>
+              <div className="ps-row">
+                <span>Client</span>
+                <span className="ps-val">{form.firstName} {form.lastName}</span>
+              </div>
+              <div className="ps-row">
+                <span>Payment Method</span>
+                <span className="ps-val">{form.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Secure Payment'}</span>
+              </div>
+              <div className="ps-row">
+                <span>Date</span>
+                <span className="ps-val">{orderDate}</span>
+              </div>
+
+              <div className="ps-divider"></div>
+
+              <div className="ps-row" style={{ marginBottom: 0 }}>
+                <span>Total Paid</span>
+                <span className="ps-val ps-total">{formatINR(success.total)}</span>
+              </div>
+            </div>
+
+            {/* Right Card: Concierge Message */}
+            <div className="ps-card">
+              <div className="ps-card-title">Concierge Message</div>
+              
+              <h2 className="ps-msg-title">Thank you for your<br/>exclusive purchase.</h2>
+              <p className="ps-msg-body">
+                Your order has been carefully confirmed and is now being prepared by our private fulfillment team. A luxury advisor will contact you shortly with shipping and delivery details.
+              </p>
+
+              <button 
+                className="ps-btn-primary"
+                onClick={() => navigate('/profile')}
+                data-testid="checkout-success-view-orders"
+              >
+                VIEW RECEIPT
+              </button>
+              <button 
+                className="ps-btn-secondary"
+                onClick={() => navigate('/')}
+                data-testid="checkout-success-continue"
+              >
+                CONTINUE SHOPPING
+              </button>
+            </div>
+          </div>
+
+          <div className="ps-footer">
+            <span>Secure transaction powered by Maison Privé Services.</span>
+            <div className="ps-badges">
+              <span>ENCRYPTED</span>
+              <span>VERIFIED</span>
+              <span>LUXURY CARE</span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     );
   }
 
