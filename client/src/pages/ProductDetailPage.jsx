@@ -192,7 +192,7 @@ const ProductDetailPage = () => {
       {/* Reuse existing global header pattern */}
       <header className="vertical-header">
         <img
-          src={require('../assets/images/logo.png')}
+          src={require('../assets/logo.png')}
           alt="AWIK SPECTRUM"
           className="header-logo"
           onClick={() => navigate('/')}
