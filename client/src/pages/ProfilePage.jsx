@@ -375,37 +375,29 @@ return (
                                                 <button onClick={() => setActiveTab('orders')} className="axm-btn-outline">View All</button>
                                             </div>
 
-                                            <div className="axm-table-wrapper">
-                                                <table className="axm-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Order ID</th>
-                                                            <th>Date</th>
-                                                            <th>Status</th>
-                                                            <th>Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                               {safeOrders.length === 0 ? (
+                                                    <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', padding: '1.5rem 0', textAlign: 'center' }}>No orders yet.</p>
+                                                ) : (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
                                                         {safeOrders.slice(0, 3).map((order) => (
-                                                            <tr key={order._id} className="axm-tr-row">
-                                                                <td>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</td>
-                                                                <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                                                <td>
-                                                                    <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>
-                                                                        {order.isDelivered ? 'Delivered' : 'Processing'}
-                                                                    </span>
-                                                                </td>
-                                                                <td>₹{order.totalPrice}</td>
-                                                            </tr>
+                                                            <div key={order._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                                    {order.orderItems?.[0]?.image && (
+                                                                        <img src={order.orderItems[0].image} alt="" style={{ width: '44px', height: '54px', objectFit: 'cover', borderRadius: '0.4rem', border: '1px solid rgba(255,255,255,0.08)' }} />
+                                                                    )}
+                                                                    <div>
+                                                                        <p style={{ fontFamily: 'var(--sans)', fontWeight: 600, color: 'var(--light)', fontSize: '0.85rem', marginBottom: '2px' }}>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</p>
+                                                                        <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '0.75rem' }}>{order.orderItems?.length || 0} item(s) · {new Date(order.createdAt).toLocaleDateString()}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                                    <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>{order.isDelivered ? 'Delivered' : 'Processing'}</span>
+                                                                    <p style={{ fontFamily: 'var(--sans)', color: 'var(--orange)', fontWeight: 600, fontSize: '0.9rem' }}>₹{order.totalPrice?.toLocaleString('en-IN')}</p>
+                                                                </div>
+                                                            </div>
                                                         ))}
-                                                        {safeOrders.length === 0 && (
-                                                            <tr>
-                                                                <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>No orders found.</td>
-                                                            </tr>
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                    </div>
+                                                )}
                                         </div>
 
                                         {/* Wishlist + Address */}
@@ -449,37 +441,62 @@ return (
                                 {activeTab === 'orders' && (
                                     <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="axm-glass-panel">
                                         <h2 className="axm-section-title" style={{ marginBottom: '1.5rem' }}>Order History</h2>
-                                        <div className="axm-table-wrapper">
-                                            <table className="axm-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Order ID</th>
-                                                        <th>Date</th>
-                                                        <th>Status</th>
-                                                        <th>Total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {safeOrders.map((order) => (
-                                                        <tr key={order._id} className="axm-tr-row">
-                                                            <td>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</td>
-                                                            <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                                            <td>
-                                                                <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>
-                                                                    {order.isDelivered ? 'Delivered' : 'Processing'}
-                                                                </span>
-                                                            </td>
-                                                            <td>₹{order.totalPrice}</td>
-                                                        </tr>
-                                                    ))}
-                                                    {safeOrders.length === 0 && (
-                                                        <tr>
-                                                            <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>No orders found.</td>
-                                                        </tr>
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        {safeOrders.length === 0 ? (
+                                            <div className="axm-empty-state">
+                                                <FaBoxOpen className="axm-empty-icon" />
+                                                <p>No orders yet. Start shopping!</p>
+                                            </div>
+                                        ) : (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                                {safeOrders.map((order) => (
+                                                    <div key={order._id} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '1rem', overflow: 'hidden' }}>
+                                                        {/* Order header */}
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.07)', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                                                                <div>
+                                                                    <p style={{ fontFamily: 'var(--sans)', fontSize: '0.65rem', letterSpacing: '0.15em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '2px' }}>Order</p>
+                                                                    <p style={{ fontFamily: 'var(--sans)', fontWeight: 600, color: 'var(--light)', fontSize: '0.9rem' }}>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p style={{ fontFamily: 'var(--sans)', fontSize: '0.65rem', letterSpacing: '0.15em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '2px' }}>Date</p>
+                                                                    <p style={{ fontFamily: 'var(--sans)', color: 'var(--light)', fontSize: '0.9rem' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p style={{ fontFamily: 'var(--sans)', fontSize: '0.65rem', letterSpacing: '0.15em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '2px' }}>Total</p>
+                                                                    <p style={{ fontFamily: 'var(--sans)', color: 'var(--orange)', fontWeight: 600, fontSize: '0.95rem' }}>₹{order.totalPrice?.toLocaleString('en-IN')}</p>
+                                                                </div>
+                                                            </div>
+                                                            <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>
+                                                                {order.isDelivered ? 'Delivered' : 'Processing'}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Order items */}
+                                                        <div style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                            {(order.orderItems || []).map((item, idx) => (
+                                                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                                    {item.image && (
+                                                                        <img
+                                                                            src={item.image}
+                                                                            alt={item.name}
+                                                                            style={{ width: '64px', height: '80px', objectFit: 'cover', borderRadius: '0.5rem', flexShrink: 0, border: '1px solid rgba(255,255,255,0.08)' }}
+                                                                        />
+                                                                    )}
+                                                                    <div style={{ flex: 1 }}>
+                                                                        <p style={{ fontFamily: 'var(--sans)', color: 'var(--light)', fontWeight: 500, marginBottom: '4px', fontSize: '0.95rem' }}>{item.name}</p>
+                                                                        <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '0.8rem' }}>Qty: {item.qty || item.quantity || 1}</p>
+                                                                    </div>
+                                                                    <p style={{ fontFamily: 'var(--sans)', color: 'var(--light)', fontWeight: 500, whiteSpace: 'nowrap', fontSize: '0.9rem' }}>₹{((item.price || 0) * (item.qty || item.quantity || 1)).toLocaleString('en-IN')}</p>
+                                                                </div>
+                                                            ))}
+                                                            {(!order.orderItems || order.orderItems.length === 0) && (
+                                                                <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '0.85rem', textAlign: 'center', padding: '0.5rem 0' }}>No item details available.</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </motion.div>
                                 )}
 
