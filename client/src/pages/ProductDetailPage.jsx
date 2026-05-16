@@ -235,21 +235,8 @@ const ProductDetailPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Gallery */}
+        {/* Gallery - IWC Style Full Left Column */}
         <div className="pdl-gallery">
-          <div className="pdl-thumb-strip">
-            {images.map((img, i) => (
-              <img
-                key={i}
-                src={img.url || getFallback(i)}
-                alt={`${product.name} ${i + 1}`}
-                className={`pdl-thumb ${i === activeImage ? 'is-active' : ''}`}
-                onClick={() => setActiveImage(i)}
-                onError={e => { e.target.onerror = null; e.target.src = getFallback(i); }}
-                data-testid={`pdl-thumb-${i}`}
-              />
-            ))}
-          </div>
 
           <div className="pdl-main-image-wrap">
             <AnimatePresence mode="wait">
@@ -285,6 +272,20 @@ const ProductDetailPage = () => {
           </div>
 
           <p className="pdl-description">{product.description}</p>
+
+          {/* IWC Style Horizontal Thumbnails */}
+          <div className="pdl-thumb-row">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                src={img.url || getFallback(i)}
+                alt={`${product.name} ${i + 1}`}
+                className={`pdl-thumb-horiz ${i === activeImage ? 'is-active' : ''}`}
+                onClick={() => setActiveImage(i)}
+                onError={e => { e.target.onerror = null; e.target.src = getFallback(i); }}
+              />
+            ))}
+          </div>
 
           {/* Size selector */}
           {product.sizes?.length > 0 && (
@@ -361,23 +362,22 @@ const ProductDetailPage = () => {
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="pdl-actions">
+          {/* Actions - IWC Style Side-by-Side */}
+          <div className="pdl-actions-row">
             <button
-              className="pdl-add-btn"
+              className="pdl-btn pdl-btn-secondary"
+              onClick={handleWishlist}
+              data-testid="pdl-wishlist-btn"
+            >
+              {isWishlisted ? 'Saved to Wishlist' : 'Add to Wishlist'}
+            </button>
+            <button
+              className="pdl-btn pdl-btn-primary"
               onClick={handleAddToBag}
               disabled={!canAdd}
               data-testid="pdl-add-to-bag-btn"
             >
-              {product.stock <= 0 ? 'Sold Out' : 'Add to Bag'}
-            </button>
-            <button
-              className={`pdl-wish-btn ${isWishlisted ? 'is-active' : ''}`}
-              onClick={handleWishlist}
-              aria-label="Toggle wishlist"
-              data-testid="pdl-wishlist-btn"
-            >
-              {isWishlisted ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
+              {product.stock <= 0 ? 'Sold Out' : 'Enquire Now'}
             </button>
           </div>
 
