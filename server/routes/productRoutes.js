@@ -6,7 +6,8 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  getFeaturedProducts
+  getFeaturedProducts,
+  createProductReview
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import { validateRequest } from '../middleware/validateRequest.js';
@@ -42,5 +43,10 @@ router.route('/:id')
     body('images.*.url').optional().isURL(),
   ], validateRequest, updateProduct)
   .delete(protect, admin, deleteProduct);
+
+router.route('/:id/reviews').post(protect, [
+  body('rating').isNumeric().withMessage('Rating must be a number between 1 and 5'),
+  body('comment').trim().notEmpty().withMessage('Comment is required'),
+], validateRequest, createProductReview);
 
 export default router;

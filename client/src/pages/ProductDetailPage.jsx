@@ -73,6 +73,12 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // ---------- Reviews State ----------
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+
   // ---------- Fetch product ----------
   useEffect(() => {
     let cancelled = false;
@@ -180,6 +186,35 @@ const ProductDetailPage = () => {
       navigator.clipboard.writeText(window.location.href);
       setToast('Link copied to clipboard');
       setTimeout(() => setToast(''), 3000);
+    }
+  };
+
+  const submitReview = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      setError('Please sign in to write a review');
+      return;
+    }
+    try {
+      setSubmittingReview(true);
+      await axios.post(
+        `${API_BASE}/api/products/${product._id}/reviews`,
+        { rating: reviewRating, comment: reviewComment },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+      setToast('Review submitted successfully');
+      setShowReviewForm(false);
+      setReviewRating(5);
+      setReviewComment('');
+      
+      // Refresh product to show new review
+      const { data } = await axios.get(`${API_BASE}/api/products/${product._id}`);
+      setProduct(data);
+    } catch (err) {
+      setToast(err?.response?.data?.message || 'Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
+      setTimeout(() => setToast(''), 3500);
     }
   };
 
@@ -494,40 +529,101 @@ const ProductDetailPage = () => {
         })}
       </section>
 
-      {/* Reviews & Ratings (Mock) */}
+      {/* Reviews & Ratings */}
       <section className="pdl-reviews" style={{ padding: '4rem 5vw', maxWidth: '1400px', margin: '0 auto', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', color: '#f8f4ee', margin: 0, fontWeight: 300 }}>Client Testimonials</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: '0.8rem' }}>
               <div style={{ display: 'flex', color: '#C9A84C', fontSize: '1.1rem' }}>
-                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar style={{ opacity: 0.5 }} />
+                {[...Array(5)].map((_, i) => (
+                  <FaStar key={i} style={{ opacity: i < (product.ratings || 0) ? 1 : 0.3 }} />
+                ))}
               </div>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#999', letterSpacing: '0.05em' }}>4.8 / 5 based on 24 reviews</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#999', letterSpacing: '0.05em' }}>
+                {product.ratings > 0 ? `${product.ratings.toFixed(1)} / 5 based on ${product.numReviews} review${product.numReviews !== 1 ? 's' : ''}` : 'No reviews yet'}
+              </span>
             </div>
           </div>
-          <button style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: '#e8e8e8', padding: '0.6rem 1.2rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'border-color 0.2s' }}>
-            Write a Review
-          </button>
+          {user ? (
+            <button 
+              onClick={() => setShowReviewForm(!showReviewForm)}
+              style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: '#e8e8e8', padding: '0.6rem 1.2rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'border-color 0.2s' }}
+            >
+              {showReviewForm ? 'Cancel' : 'Write a Review'}
+            </button>
+          ) : (
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#999' }}>
+              Please <Link to="/login" style={{ color: '#C9A84C', textDecoration: 'none' }}>sign in</Link> to write a review
+            </div>
+          )}
         </div>
 
+        <AnimatePresence>
+          {showReviewForm && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              style={{ overflow: 'hidden', marginBottom: '3rem' }}
+            >
+              <form onSubmit={submitReview} style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: '#e8e8e8', letterSpacing: '0.05em', marginBottom: '0.8rem', textTransform: 'uppercase' }}>Rating</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FaStar 
+                        key={star} 
+                        size={24}
+                        onClick={() => setReviewRating(star)}
+                        style={{ cursor: 'pointer', color: '#C9A84C', opacity: star <= reviewRating ? 1 : 0.3, transition: 'opacity 0.2s' }} 
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: '#e8e8e8', letterSpacing: '0.05em', marginBottom: '0.8rem', textTransform: 'uppercase' }}>Review</label>
+                  <textarea 
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    required
+                    rows="4"
+                    placeholder="Share your experience with this piece..."
+                    style={{ width: '100%', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '1rem', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', outline: 'none', resize: 'vertical' }}
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={submittingReview}
+                  style={{ background: '#e8e8e8', color: '#000', border: 'none', padding: '0.8rem 1.5rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: submittingReview ? 'not-allowed' : 'pointer', opacity: submittingReview ? 0.7 : 1 }}
+                >
+                  {submittingReview ? 'Submitting...' : 'Submit Review'}
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {[
-            { name: 'Priya M.', date: 'October 12, 2025', title: 'Exquisite Craftsmanship', text: 'The attention to detail on this piece is unparalleled. The fabric drapes beautifully and feels incredibly luxurious. Highly recommend the bespoke sizing.' },
-            { name: 'Ananya S.', date: 'September 28, 2025', title: 'A Timeless Addition', text: 'I wore this to a formal gala and received endless compliments. It arrived perfectly packaged, reflecting the true essence of a luxury maison.' },
-            { name: 'Rohan K.', date: 'August 04, 2025', title: 'Impeccable Service', text: 'Beyond the garment itself, the concierge service was phenomenal. They ensured it arrived in time for my event.' }
-          ].map((review, i) => (
-            <div key={i} style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ display: 'flex', color: '#C9A84C', fontSize: '0.8rem', marginBottom: '1rem' }}>
-                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+          {product.reviews && product.reviews.length > 0 ? (
+            product.reviews.map((review, i) => (
+              <div key={review._id || i} style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', color: '#C9A84C', fontSize: '0.8rem', marginBottom: '1rem' }}>
+                  {[...Array(5)].map((_, index) => (
+                    <FaStar key={index} style={{ opacity: index < review.rating ? 1 : 0.3 }} />
+                  ))}
+                </div>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#aaa', lineHeight: 1.6, margin: '0 0 1.5rem' }}>{review.comment}</p>
+                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#666', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  <span style={{ color: '#e8e8e8', fontWeight: 600 }}>{review.name}</span> — Verified Buyer <br/> {new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
               </div>
-              <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', color: '#e8e8e8', margin: '0 0 0.5rem' }}>"{review.title}"</h4>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#aaa', lineHeight: 1.6, margin: '0 0 1.5rem' }}>{review.text}</p>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#666', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                <span style={{ color: '#e8e8e8', fontWeight: 600 }}>{review.name}</span> — Verified Buyer <br/> {review.date}
-              </div>
+            ))
+          ) : (
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: '#888', gridColumn: '1 / -1' }}>
+              No reviews yet. Be the first to review this piece.
             </div>
-          ))}
+          )}
         </div>
       </section>
 
