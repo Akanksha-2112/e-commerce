@@ -12,8 +12,9 @@ const FALLBACK = [
 
 const WishlistPage = () => {
     const navigate = useNavigate();
-    const { wishlist, toggleWishlist } = useGlobal();
+    const { wishlist, toggleWishlist, addToCart, removeFromWishlist, toggleCart } = useGlobal();
     const wishlistItems = Object.values(wishlist);
+
 
     const formatPrice = p => new Intl.NumberFormat('en-IN', {
         style: 'currency', currency: 'INR', maximumFractionDigits: 0,
@@ -94,8 +95,26 @@ const WishlistPage = () => {
                                     <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#e8e8e8' }}>{item.name}</span>
                                     <span style={{ color: '#555' }}>↗</span>
                                 </div>
-                                <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>{formatPrice(item.price)}</p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.6rem' }}>
+                                    <p style={{ fontSize: '0.8rem', color: '#666' }}>{formatPrice(item.price)}</p>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            addToCart({ ...item, quantity: 1 });
+                                            removeFromWishlist(item.id);
+                                            toggleCart(true);
+                                        }}
+                                        style={{
+                                            background: '#C9A84C', color: '#0a0a0a', border: 'none', padding: '0.4rem 0.8rem',
+                                            fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+                                            cursor: 'pointer', borderRadius: 2
+                                        }}
+                                    >
+                                        Move to Bag
+                                    </button>
+                                </div>
                             </div>
+
                         </div>
                     ))}
                 </div>

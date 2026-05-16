@@ -4,24 +4,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Syne:wght@600;700&family=Space+Grotesk:wght@500;600&display=swap');
 
 :root {
-    --bg: #0C0C0E;
-    --bg-card: rgba(255, 255, 255, 0.04);
-    --bg-glass: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-    --white: #F8F4EE;
-    --muted: rgba(248, 244, 238, 0.55);
-    --border: rgba(255, 255, 255, 0.1);
-    --orange: #F05A28;
-    --orange-hover: #ff6836;
-    --orange-dim: rgba(240, 90, 40, 0.15);
+    --bg: var(--awik-ink, #0C0C0E);
+    --bg-card: var(--awik-panel, rgba(255, 255, 255, 0.055));
+    --bg-glass: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+    --white: var(--awik-ivory, #F8F4EE);
+    --muted: var(--awik-muted, rgba(248, 244, 238, 0.62));
+    --border: var(--awik-line, rgba(255, 255, 255, 0.14));
+    --orange: var(--awik-brass, #C99B5A);
+    --orange-hover: #e0b373;
+    --orange-dim: rgba(201, 155, 90, 0.16);
     
-    --sans: 'Outfit', sans-serif;
-    --display: 'Bebas Neue', sans-serif;
-    --heading: 'Syne', sans-serif;
-    --label: 'Space Grotesk', sans-serif;
+    --sans: var(--awik-font-body, 'Outfit', sans-serif);
+    --display: var(--awik-font-display, 'Bebas Neue', sans-serif);
+    --heading: var(--awik-font-heading, 'Syne', sans-serif);
+    --label: var(--awik-font-label, 'Space Grotesk', sans-serif);
 }
 
 .axm-profile-root {
-    background: var(--bg);
+    background:
+        linear-gradient(120deg, rgba(143, 51, 71, 0.10), transparent 34%),
+        linear-gradient(240deg, rgba(52, 117, 111, 0.10), transparent 42%),
+        var(--bg);
     color: var(--white);
     font-family: var(--sans);
     min-height: 100vh;
@@ -63,7 +66,7 @@
     background: var(--bg-glass);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border);
-    border-radius: 1.5rem;
+    border-radius: 8px;
     padding: 2rem;
 }
 
@@ -87,7 +90,7 @@
     font-size: 2.5rem;
     color: var(--white);
     line-height: 1;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
 }
 .axm-sidebar-email {
     font-family: var(--label);
@@ -106,12 +109,12 @@
     color: #fff;
     border: none;
     padding: 1rem;
-    border-radius: 1rem;
+    border-radius: 8px;
     font-family: var(--label);
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -130,7 +133,7 @@
     width: 100%;
     text-align: left;
     padding: 1rem;
-    border-radius: 1rem;
+    border-radius: 8px;
     font-family: var(--label);
     font-size: 0.85rem;
     font-weight: 500;
@@ -150,7 +153,7 @@
 .axm-nav-item.active {
     background: var(--orange-dim);
     color: var(--orange);
-    border-color: rgba(240, 90, 40, 0.3);
+    border-color: rgba(201, 155, 90, 0.34);
 }
 
 /* Stats */
@@ -170,7 +173,7 @@
     font-size: 0.8rem;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
 }
 .axm-stat-value {
     font-family: var(--display);
@@ -202,11 +205,11 @@
     color: var(--white);
     border: 1px solid var(--border);
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     font-family: var(--label);
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -230,7 +233,7 @@
     color: var(--muted);
     padding-bottom: 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
 }
 .axm-table tr.axm-tr-row td {
     background: rgba(255, 255, 255, 0.02);
@@ -239,27 +242,27 @@
     font-size: 0.9rem;
 }
 .axm-table tr.axm-tr-row td:first-child {
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     font-weight: 600;
 }
 .axm-table tr.axm-tr-row td:last-child {
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     font-family: var(--display);
     font-size: 1.2rem;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--orange);
 }
 
 .axm-badge {
     padding: 0.3rem 0.8rem;
-    border-radius: 2rem;
+    border-radius: 8px;
     font-family: var(--label);
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     display: inline-block;
 }
 .axm-badge-delivered {
@@ -268,9 +271,9 @@
     border: 1px solid rgba(16, 185, 129, 0.3);
 }
 .axm-badge-processing {
-    background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    background: rgba(201, 155, 90, 0.16);
+    color: var(--orange);
+    border: 1px solid rgba(201, 155, 90, 0.34);
 }
 .axm-badge-shipped {
     background: rgba(59, 130, 246, 0.15);
@@ -297,7 +300,7 @@
     align-items: center;
     padding: 1rem;
     background: rgba(255,255,255,0.02);
-    border-radius: 1rem;
+    border-radius: 8px;
     margin-top: 1rem;
 }
 .axm-list-item-title {
@@ -315,14 +318,14 @@
     font-family: var(--display);
     font-size: 1.2rem;
     color: var(--orange);
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
 }
 
 .axm-address-box {
     margin-top: 1.5rem;
     background: rgba(255,255,255,0.02);
     padding: 1.5rem;
-    border-radius: 1rem;
+    border-radius: 8px;
 }
 .axm-address-name {
     font-family: var(--sans);
@@ -359,7 +362,7 @@
     font-size: 0.75rem;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     margin-bottom: 0.5rem;
 }
 .axm-form-input {
@@ -367,7 +370,7 @@
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     color: var(--white);
     font-family: var(--sans);
     font-size: 1rem;
@@ -400,5 +403,5 @@
     justify-content: center;
     font-family: var(--display);
     font-size: 2rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
 }

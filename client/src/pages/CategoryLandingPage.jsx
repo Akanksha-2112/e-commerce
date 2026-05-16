@@ -73,6 +73,11 @@ const CategoryLandingPage = ({ category, initialSubcategories }) => {
     // Size picker mini-modal state
     const [sizePicker, setSizePicker] = useState(null); // { product, index } | null
 
+    // ── Sort & Filter state ──────────────────────────────────────
+    const [sortBy, setSortBy] = useState('default');       // 'default' | 'price-asc' | 'price-desc' | 'name'
+    const [maxPrice, setMaxPrice] = useState('');
+    const [sizeFilter, setSizeFilter] = useState('');
+    const [filterOpen, setFilterOpen] = useState(false);
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -86,7 +91,26 @@ const CategoryLandingPage = ({ category, initialSubcategories }) => {
             }
         };
         fetchProducts();
+        // Reset filters on subcategory change
+        setSortBy('default');
+        setMaxPrice('');
+        setSizeFilter('');
     }, [category, activeSubcategory]);
+
+    // Derive the displayed list after sort + filter
+    const displayedProducts = React.useMemo(() => {
+        let list = [...products];
+        if (maxPrice && !isNaN(Number(maxPrice))) {
+            list = list.filter(p => p.price <= Number(maxPrice));
+        }
+        if (sizeFilter) {
+            list = list.filter(p => !p.sizes?.length || p.sizes.includes(sizeFilter));
+        }
+        if (sortBy === 'price-asc') list.sort((a, b) => a.price - b.price);
+        else if (sortBy === 'price-desc') list.sort((a, b) => b.price - a.price);
+        else if (sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+        return list;
+    }, [products, sortBy, maxPrice, sizeFilter]);
 
     const handleQuickAdd = (e, product, index) => {
         e.stopPropagation();
@@ -147,11 +171,71 @@ const CategoryLandingPage = ({ category, initialSubcategories }) => {
                 </div>
             </header>
 
+            {/* ── Sort & Filter Toolbar ─────────────────────────── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 3vw', borderBottom: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#888', letterSpacing: '0.1em' }}>
+                    {displayedProducts.length} piece{displayedProducts.length !== 1 ? 's' : ''}
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Sort */}
+                    <select
+                        value={sortBy}
+                        onChange={e => setSortBy(e.target.value)}
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#e8e8e8', padding: '0.5rem 1rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.08em', borderRadius: 4, cursor: 'pointer' }}
+                    >
+                        <option value="default">Sort: Default</option>
+                        <option value="price-asc">Price: Low → High</option>
+                        <option value="price-desc">Price: High → Low</option>
+                        <option value="name">Name: A–Z</option>
+                    </select>
+
+                    {/* Filter toggle */}
+                    <button
+                        onClick={() => setFilterOpen(o => !o)}
+                        style={{ background: filterOpen ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${filterOpen ? '#C9A84C' : 'rgba(255,255,255,0.1)'}`, color: filterOpen ? '#C9A84C' : '#e8e8e8', padding: '0.5rem 1rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.08em', borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+                    >
+                        <span>⚙</span> Filter {(maxPrice || sizeFilter) ? '·' : ''}
+                        {(maxPrice || sizeFilter) && <span style={{ background: '#C9A84C', color: '#0a0a0a', borderRadius: 99, width: 16, height: 16, fontSize: '0.6rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>!</span>}
+                    </button>
+                </div>
+            </div>
+
+            {/* Filter panel */}
+            {filterOpen && (
+                <div style={{ display: 'flex', gap: '1.5rem', padding: '1rem 3vw', background: 'rgba(255,255,255,0.025)', borderBottom: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                    <div>
+                        <label style={{ fontFamily: 'var(--font-sans)', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Max Price (₹)</label>
+                        <input
+                            type="number"
+                            value={maxPrice}
+                            onChange={e => setMaxPrice(e.target.value)}
+                            placeholder="e.g. 10000"
+                            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#e8e8e8', padding: '0.45rem 0.8rem', fontFamily: 'var(--font-sans)', fontSize: '0.82rem', borderRadius: 4, width: 140 }}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ fontFamily: 'var(--font-sans)', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Size</label>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            {['XS','S','M','L','XL','XXL'].map(s => (
+                                <button
+                                    key={s}
+                                    onClick={() => setSizeFilter(sf => sf === s ? '' : s)}
+                                    style={{ padding: '0.35rem 0.75rem', border: `1px solid ${sizeFilter === s ? '#C9A84C' : 'rgba(255,255,255,0.15)'}`, background: sizeFilter === s ? 'rgba(201,168,76,0.15)' : 'transparent', color: sizeFilter === s ? '#C9A84C' : '#aaa', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', borderRadius: 3, cursor: 'pointer' }}
+                                >
+                                    {s}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <button onClick={() => { setMaxPrice(''); setSizeFilter(''); }} style={{ background: 'none', border: 'none', color: '#888', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline', paddingBottom: 2 }}>Clear all</button>
+                </div>
+            )}
+
             {loading ? (
                 <div className="collection-loading">Loading collection</div>
             ) : (
                 <section className="collection-grid" aria-label={`${activeSubcategory} products`}>
-                    {products.map((product, index) => {
+                    {displayedProducts.map((product, index) => {
                         const badge = getBadge(product, index);
                         const isWishlisted = !!wishlist[product._id];
                         const outOfStock = product.stock === 0;
