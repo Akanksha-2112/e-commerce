@@ -388,7 +388,7 @@ return (
                                                     <tbody>
                                                         {safeOrders.slice(0, 3).map((order) => (
                                                             <tr key={order._id} className="axm-tr-row">
-                                                                <td>#{order._id.substring(order._id.length - 6)}</td>
+                                                                <td>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</td>
                                                                 <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
                                                                 <td>
                                                                     <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>
@@ -462,7 +462,7 @@ return (
                                                 <tbody>
                                                     {safeOrders.map((order) => (
                                                         <tr key={order._id} className="axm-tr-row">
-                                                            <td>#{order._id.substring(order._id.length - 6)}</td>
+                                                            <td>#LX-{order._id.substring(order._id.length - 6).toUpperCase()}</td>
                                                             <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
                                                             <td>
                                                                 <span className={`axm-badge ${order.isDelivered ? 'axm-badge-delivered' : 'axm-badge-processing'}`}>
