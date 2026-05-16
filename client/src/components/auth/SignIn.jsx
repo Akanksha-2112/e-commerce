@@ -1,6 +1,6 @@
 import React, { useState, useContext, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaFingerprint, FaShieldAlt, FaGoogle, FaFacebook } from 'react-icons/fa';
 import ForgotPasswordModal from './ForgotPasswordModal';
@@ -10,7 +10,10 @@ import { API_BASE } from '../../config';
 const SignIn = () => {
   const { login, verifyOtp } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Read ?returnTo= so we can bounce back after auth
+  const returnTo = new URLSearchParams(location.search).get('returnTo') || '/';
   // Inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +44,7 @@ const SignIn = () => {
       setIsLoading(false);
       if (result.success) {
         if (result.type === 'token') {
-          navigate('/');
+          navigate(returnTo, { replace: true });
         } else {
           setAuthStage('2fa');
           setTwoFactorCode(['', '', '', '', '', '']); // Clear for fresh input

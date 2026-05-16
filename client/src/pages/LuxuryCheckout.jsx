@@ -56,7 +56,7 @@ const LuxuryCheckout = () => {
   // ---------- Guards ----------
   useEffect(() => {
     if (!user) {
-      navigate('/login');
+      navigate(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`, { replace: true });
     }
   }, [user, navigate]);
 
