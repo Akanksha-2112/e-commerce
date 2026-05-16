@@ -13,7 +13,7 @@ const formatINR = (price) =>
 
 const CartDrawer = () => {
     const navigate = useNavigate();
-    const { isCartOpen, toggleCart, cart, removeFromCart, addToCart, updateCartQty } = useGlobal();
+    const { isCartOpen, toggleCart, cart, removeFromCart, addToCart } = useGlobal();
     const cartItems = Object.values(cart);
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 0), 0);
