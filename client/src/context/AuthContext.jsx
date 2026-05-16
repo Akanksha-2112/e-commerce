@@ -13,24 +13,30 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const userInfo = localStorage.getItem('userInfo');
-      if (userInfo) {
-        const parsedUser = JSON.parse(userInfo);
-        setUser(parsedUser);
-        setLoading(false); // unblock UI immediately with cached user data
+      try {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo && userInfo !== 'undefined') {
+          const parsedUser = JSON.parse(userInfo);
+          setUser(parsedUser);
+          setLoading(false); // unblock UI immediately with cached user data
 
-        // Background refresh to get latest data and validate token
-        try {
-          const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-          const { data } = await axios.get(`${API_BASE}/api/auth/profile`, config);
-          const updatedData = { ...data, token: parsedUser.token };
-          setUser(updatedData);
-          localStorage.setItem('userInfo', JSON.stringify(updatedData));
-        } catch (error) {
-          console.error('Token invalid or expired', error);
-          // Silent fail — let user continue with cached data or re-login manually
+          // Background refresh to get latest data and validate token
+          try {
+            const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
+            const { data } = await axios.get(`${API_BASE}/api/auth/profile`, config);
+            const updatedData = { ...data, token: parsedUser.token };
+            setUser(updatedData);
+            localStorage.setItem('userInfo', JSON.stringify(updatedData));
+          } catch (error) {
+            console.error('Token invalid or expired', error);
+            // Silent fail — let user continue with cached data or re-login manually
+          }
+        } else {
+          setLoading(false);
         }
-      } else {
+      } catch (e) {
+        console.error('Error parsing user info', e);
+        localStorage.removeItem('userInfo');
         setLoading(false);
       }
     };
