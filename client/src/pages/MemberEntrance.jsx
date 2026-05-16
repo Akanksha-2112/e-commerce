@@ -149,14 +149,14 @@ const MemberEntrance = () => {
                     {view === 'signin' && (
                         <motion.div
                             key="signin"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.5, ease: [0.2, 0, 0.2, 1] }}
                             className="luxury-auth-content"
                         >
-                            <h1 className="luxury-title font-playfair">ENTER THE ATELIER</h1>
-                            <p className="luxury-subtitle font-inter">Please enter your credentials to access your private profile.</p>
+                            <h1 className="luxury-title">ENTER THE<br />ATELIER</h1>
+                            <p className="luxury-subtitle">Private collection access for registered members.</p>
 
                             <ErrorBanner message={globalError} onClose={() => setGlobalError('')} />
 
@@ -165,13 +165,15 @@ const MemberEntrance = () => {
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     className="luxury-invite-container"
+                                    style={{ marginBottom: '2rem' }}
                                 >
-                                    <p className="luxury-invite-text">This identity is not yet part of our private collection. Would you like to Join the Atelier?</p>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--luxury-gold)', marginBottom: '1rem' }}>This identity is not yet recognized in our database.</p>
                                     <button
                                         className="luxury-button secondary"
                                         onClick={() => toggleView('signup')}
+                                        style={{ marginTop: 0 }}
                                     >
-                                        JOIN THE ATELIER
+                                        JOIN THE MAISON
                                     </button>
                                 </motion.div>
                             )}
@@ -199,7 +201,7 @@ const MemberEntrance = () => {
                                         placeholder=" "
                                         {...signInFormik.getFieldProps('password')}
                                     />
-                                    <label className="luxury-label">Private Password</label>
+                                    <label className="luxury-label">Password</label>
                                     {signInFormik.touched.password && signInFormik.errors.password && (
                                         <div className="luxury-error">{signInFormik.errors.password}</div>
                                     )}
@@ -210,21 +212,21 @@ const MemberEntrance = () => {
                                     type="submit"
                                     disabled={signInFormik.isSubmitting || !signInFormik.isValid || !signInFormik.dirty}
                                 >
-                                    {signInFormik.isSubmitting ? <><span className="spinner"></span> VALIDATING...</> : 'ACCESS YOUR PROFILE'}
+                                    {signInFormik.isSubmitting ? <><span className="spinner"></span> VALIDATING...</> : 'ACCESS PROFILE'}
                                 </button>
                             </form>
 
                             <div className="luxury-toggle-text">
-                                <button className="luxury-link" onClick={() => toggleView('reset')}>Forgot Password?</button>
+                                <button className="luxury-link" style={{ fontSize: '0.7rem', opacity: 0.6 }} onClick={() => toggleView('reset')}>Lost Access?</button>
                             </div>
 
                             <div className="luxury-toggle-text">
-                                Not a member yet?
-                                <button className="luxury-link" onClick={() => toggleView('signup')}>Join the Maison</button>
+                                NO ACCOUNT? 
+                                <button className="luxury-link" onClick={() => toggleView('signup')}>JOIN NOW</button>
                             </div>
 
                             <div className="luxury-social-divider">
-                                <span>OR CONTINUE WITH</span>
+                                <span>AUTHENTICATE VIA</span>
                             </div>
 
                             <div className="luxury-social-buttons">
@@ -237,14 +239,14 @@ const MemberEntrance = () => {
                     {view === 'signup' && (
                         <motion.div
                             key="signup"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.5, ease: [0.2, 0, 0.2, 1] }}
                             className="luxury-auth-content"
                         >
-                            <h1 className="luxury-title font-playfair">JOIN THE MAISON</h1>
-                            <p className="luxury-subtitle font-inter">Experience early access to collections and bespoke services.</p>
+                            <h1 className="luxury-title">JOIN THE<br />MAISON</h1>
+                            <p className="luxury-subtitle">Experience bespoke shopping and early arrivals.</p>
 
                             <ErrorBanner message={globalError} onClose={() => setGlobalError('')} />
 
@@ -300,7 +302,7 @@ const MemberEntrance = () => {
                                         placeholder=" "
                                         {...signUpFormik.getFieldProps('password')}
                                     />
-                                    <label className="luxury-label">Private Password</label>
+                                    <label className="luxury-label">Create Password</label>
                                     {signUpFormik.touched.password && signUpFormik.errors.password && (
                                         <div className="luxury-error">{signUpFormik.errors.password}</div>
                                     )}
@@ -311,13 +313,13 @@ const MemberEntrance = () => {
                                     type="submit"
                                     disabled={signUpFormik.isSubmitting || !signUpFormik.isValid || !signUpFormik.dirty}
                                 >
-                                    {signUpFormik.isSubmitting ? <><span className="spinner"></span> SECURING...</> : 'CREATE PRIVATE PROFILE'}
+                                    {signUpFormik.isSubmitting ? <><span className="spinner"></span> SECURING...</> : 'CREATE PROFILE'}
                                 </button>
                             </form>
 
                             <div className="luxury-toggle-text">
-                                Already have access?
-                                <button className="luxury-link" onClick={() => toggleView('signin')}>Access Profile</button>
+                                ALREADY MEMBER?
+                                <button className="luxury-link" onClick={() => toggleView('signin')}>ACCESS NOW</button>
                             </div>
                         </motion.div>
                     )}
@@ -325,17 +327,17 @@ const MemberEntrance = () => {
                     {view === 'reset' && (
                         <motion.div
                             key="reset"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.5 }}
                             className="luxury-auth-content luxury-glass-card"
                         >
-                            <h1 className="luxury-title font-playfair" style={{ fontSize: '1.8rem' }}>RESET ACCESS</h1>
-                            <p className="luxury-subtitle font-inter">Please provide your email to receive a secure link.</p>
+                            <h1 className="luxury-title" style={{ fontSize: '2.5rem' }}>LOST ACCESS?</h1>
+                            <p className="luxury-subtitle">RECOVER YOUR PRIVATE ACCOUNT</p>
 
                             <ErrorBanner message={globalError} onClose={() => setGlobalError('')} />
-                            {successMessage && <div className="luxury-global-error" style={{ color: '#2E7D32', borderColor: '#2E7D32', backgroundColor: 'rgba(46, 125, 50, 0.05)' }}>{successMessage}</div>}
+                            {successMessage && <div className="luxury-global-error" style={{ color: 'var(--luxury-gold)', borderColor: 'var(--luxury-gold)', backgroundColor: 'rgba(201, 168, 76, 0.05)' }}>{successMessage}</div>}
 
                             <form className="luxury-form" onSubmit={resetFormik.handleSubmit}>
                                 <div className="luxury-input-wrapper">
@@ -362,7 +364,7 @@ const MemberEntrance = () => {
                             </form>
 
                             <div className="luxury-toggle-text">
-                                <button className="luxury-link" onClick={() => toggleView('signin')}>Return to Entrance</button>
+                                <button className="luxury-link" onClick={() => toggleView('signin')}>BACK TO ENTRANCE</button>
                             </div>
                         </motion.div>
                     )}

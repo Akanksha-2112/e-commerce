@@ -1,16 +1,15 @@
-/* LuxuryAuth.css */
+/* LuxuryAuth.css - Dark Nakula Edition */
 
-/* Variables for easy tweaking */
 :root {
-    --luxury-black: #000000;
+    --luxury-black: #0c0c0e;
     --luxury-white: #FFFFFF;
-    --luxury-off-white: #F9F9F9;
-    --luxury-gray: #888888;
-    --luxury-border: #E0E0E0;
-    --luxury-glow: rgba(0, 0, 0, 0.1);
-    --luxury-font-heading: 'Playfair Display', serif;
+    --luxury-off-white: #111111;
+    --luxury-gray: rgba(255, 255, 255, 0.4);
+    --luxury-border: rgba(255, 255, 255, 0.08);
+    --luxury-glow: rgba(201, 168, 76, 0.1);
+    --luxury-font-heading: 'Bebas Neue', Impact, sans-serif;
     --luxury-font-body: 'Inter', sans-serif;
-    --luxury-gold: #D4AF37;
+    --luxury-gold: #C9A84C;
 }
 
 .luxury-auth-container {
@@ -19,21 +18,22 @@
     width: 100vw;
     overflow: hidden;
     font-family: var(--luxury-font-body);
-    background-color: var(--luxury-off-white);
+    background-color: var(--luxury-black);
+    color: var(--luxury-white);
 }
 
 /* Left Side - Image */
 .luxury-auth-image {
-    flex: 1;
+    flex: 1.2;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
     display: none;
-    /* Hidden on mobile by default */
+    filter: brightness(0.7) contrast(1.1);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .luxury-auth-image {
         display: block;
     }
@@ -46,8 +46,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
-    /* Subtle overlay */
+    background: linear-gradient(to right, rgba(12, 12, 14, 0) 60%, rgba(12, 12, 14, 1) 100%);
 }
 
 /* Right Side - Form */
@@ -57,41 +56,43 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
-    background-color: var(--luxury-off-white);
+    padding: 4rem 2rem;
+    background-color: var(--luxury-black);
     position: relative;
 }
 
 .luxury-auth-content {
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     z-index: 10;
 }
 
 /* Typography */
 .luxury-title {
     font-family: var(--luxury-font-heading);
-    font-size: 2.5rem;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
     font-weight: 400;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     margin-bottom: 0.5rem;
-    color: var(--luxury-black);
-    font-style: italic;
+    color: var(--luxury-white);
+    line-height: 0.9;
 }
 
 .luxury-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--luxury-gray);
-    margin-bottom: 2.5rem;
-    font-weight: 300;
-    line-height: 1.5;
+    margin-bottom: 3rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 /* Form Elements */
 .luxury-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .luxury-input-wrapper {
@@ -100,98 +101,105 @@
 
 .luxury-input {
     width: 100%;
-    padding: 0.8rem 0;
+    padding: 1rem 0;
     border: none;
     border-bottom: 1px solid var(--luxury-border);
     background: transparent;
     font-size: 1rem;
-    color: var(--luxury-black);
-    transition: all 0.3s ease;
+    color: var(--luxury-white);
+    transition: all 0.4s cubic-bezier(0.2, 0, 0.2, 1);
     outline: none;
     border-radius: 0;
-    /* Remove default border-radius */
     font-family: var(--luxury-font-body);
 }
 
-.luxury-input::placeholder {
-    color: transparent;
-    /* Hide placeholder to use floating label or just clean look */
-}
-
 .luxury-input:focus {
-    border-bottom-color: var(--luxury-black);
-    box-shadow: 0 1px 0 0 var(--luxury-glow);
+    border-bottom-color: var(--luxury-gold);
 }
 
 .luxury-input.error {
-    border-bottom-color: #D32F2F;
+    border-bottom-color: #EF4444;
 }
 
 .luxury-label {
     position: absolute;
-    top: 0.8rem;
+    top: 1rem;
     left: 0;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--luxury-gray);
     pointer-events: none;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .luxury-input:focus~.luxury-label,
 .luxury-input:not(:placeholder-shown)~.luxury-label {
-    top: -0.5rem;
-    font-size: 0.75rem;
-    color: var(--luxury-black);
+    top: -0.8rem;
+    font-size: 0.65rem;
+    color: var(--luxury-gold);
+    font-weight: 700;
 }
 
 /* Button */
 .luxury-button {
     width: 100%;
-    padding: 1rem;
-    background-color: var(--luxury-black);
-    color: var(--luxury-white);
-    border: 1px solid var(--luxury-black);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    padding: 1.2rem;
+    background-color: var(--luxury-white);
+    color: var(--luxury-black);
+    border: 1px solid var(--luxury-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
+    transition: all 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+    margin-top: 1.5rem;
     text-transform: uppercase;
     position: relative;
-    overflow: hidden;
 }
 
 .luxury-button:hover:not(:disabled) {
     background-color: transparent;
+    color: var(--luxury-white);
+    border-color: var(--luxury-white);
+}
+
+.luxury-button.secondary {
+    background-color: transparent;
+    color: var(--luxury-gold);
+    border-color: var(--luxury-gold);
+    margin-top: 2rem;
+}
+
+.luxury-button.secondary:hover {
+    background-color: var(--luxury-gold);
     color: var(--luxury-black);
-    border-color: var(--luxury-black);
 }
 
 .luxury-button:disabled {
-    background-color: var(--luxury-gray);
-    border-color: var(--luxury-gray);
+    background-color: #333;
+    border-color: #333;
+    color: #666;
     cursor: not-allowed;
-    opacity: 0.7;
 }
 
-/* Reset Password Card - Glassmorphism */
+/* Glassmorphism Card for Reset */
 .luxury-glass-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 2rem;
-    border-radius: 4px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 3rem;
+    border-radius: 0;
 }
 
 /* Social Login */
 .luxury-social-divider {
     display: flex;
     align-items: center;
-    margin: 2rem 0;
+    margin: 3rem 0;
     color: var(--luxury-gray);
-    font-size: 0.8rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
 }
 
 .luxury-social-divider::before,
@@ -203,92 +211,106 @@
 }
 
 .luxury-social-divider span {
-    padding: 0 1rem;
+    padding: 0 1.5rem;
 }
 
 .luxury-social-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: center;
 }
 
 .social-btn {
-    width: 50px;
-    height: 50px;
+    width: 54px;
+    height: 54px;
     border: 1px solid var(--luxury-border);
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     background: transparent;
-    color: var(--luxury-black);
+    color: var(--luxury-white);
 }
 
 .social-btn:hover {
-    border-color: var(--luxury-black);
-    background-color: var(--luxury-black);
-    color: var(--luxury-white);
+    border-color: var(--luxury-gold);
+    background-color: var(--luxury-gold);
+    color: var(--luxury-black);
+    transform: translateY(-3px);
 }
 
 /* Toggle Link */
 .luxury-toggle-text {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--luxury-gray);
+    letter-spacing: 0.05em;
 }
 
 .luxury-link {
-    color: var(--luxury-black);
-    font-weight: 600;
+    color: var(--luxury-white);
+    font-weight: 700;
     cursor: pointer;
     background: none;
     border: none;
     padding: 0;
-    margin-left: 0.5rem;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    margin-left: 0.8rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--luxury-gold);
+    transition: color 0.3s ease;
 }
 
-/* Error Message */
+.luxury-link:hover {
+    color: var(--luxury-gold);
+}
+
+/* Error Banner */
 .luxury-error {
-    color: #D32F2F;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
+    color: #EF4444;
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
     text-align: left;
+    font-weight: 600;
 }
 
 .luxury-global-error {
-    color: #D32F2F;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+    color: #EF4444;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
     text-align: center;
-    padding: 0.5rem;
-    border: 1px solid #D32F2F;
-    background-color: rgba(211, 47, 47, 0.05);
+    padding: 1rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background-color: rgba(239, 68, 68, 0.05);
 }
 
 /* Loading Spinner */
 .spinner {
     display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-    margin-right: 8px;
-}
-
-.luxury-button:hover .spinner {
-    border-top-color: var(--luxury-black);
-    border-color: rgba(0, 0, 0, 0.3);
+    border-top-color: currentColor;
+    animation: spin 0.8s linear infinite;
+    margin-right: 12px;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
+    to { transform: rotate(360deg); }
+}
+
+/* Row for signup */
+.luxury-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .luxury-row {
+        grid-template-columns: 1fr;
     }
 }

@@ -49,7 +49,7 @@ const CartDrawer = () => {
                             <div key={item.id} className="cart-item" data-testid={`cart-item-${item.id}`}>
                                 {item.image && <img src={item.image} alt={item.name} className="cart-thumb" />}
                                 <div className="cart-details">
-                                    <div className="cart-brand">AWIK MAISON</div>
+                                    <div className="cart-brand" style={{ textTransform: 'uppercase' }}>{item.brand || 'AWIK SPECTRUM'}</div>
                                     <div className="cart-name">{item.name}</div>
                                     {(item.size || item.color) && (
                                         <div style={{ fontSize: '0.72rem', color: '#888', marginTop: '3px', fontFamily: 'var(--font-sans)', letterSpacing: '0.05em' }}>

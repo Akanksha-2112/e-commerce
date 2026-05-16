@@ -551,7 +551,7 @@
 
 @media (max-width: 1024px) {
     .checkout-container {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .checkout-left,

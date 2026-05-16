@@ -157,6 +157,7 @@ const LuxuryCheckout = () => {
   if (success) {
     const orderDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date());
     const displayId = success.orderId ? `#LX-${String(success.orderId).slice(-6).toUpperCase()}` : 'Pending';
+    const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
     return (
       <div className="premium-success-wrapper">
@@ -189,7 +190,7 @@ const LuxuryCheckout = () => {
               </div>
               <div className="ps-row">
                 <span>Client</span>
-                <span className="ps-val">{form.firstName} {form.lastName}</span>
+                <span className="ps-val">{capitalize(form.firstName)} {capitalize(form.lastName)}</span>
               </div>
               <div className="ps-row">
                 <span>Payment Method</span>
@@ -481,9 +482,9 @@ const LuxuryCheckout = () => {
               <span>Subtotal</span>
               <span>{formatINR(subtotal)}</span>
             </div>
-            <div className="summary-row">
+            <div className="summary-row" style={{ color: '#C9A84C' }}>
               <span>Shipping</span>
-              <span>Complimentary</span>
+              <span>Complimentary (No Extra Fee)</span>
             </div>
             <div className="summary-row">
               <span>GST (18%)</span>

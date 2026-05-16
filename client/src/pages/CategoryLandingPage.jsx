@@ -152,7 +152,10 @@ const CategoryLandingPage = ({ category, initialSubcategories }) => {
                 <div className="collection-kicker">AWIK SPECTRUM</div>
                 <h1>{category} Collection</h1>
                 <p>
-                    A refined edit of ceremonial, everyday, and statement pieces selected for modern wardrobes.
+                    {category === 'Men' ? "A definitive curation of refined menswear, marrying heritage craftsmanship with contemporary silhouettes." :
+                     category === 'Women' ? "An exquisite edit of women's couture, designed to elevate your wardrobe with grace and sophistication." :
+                     category === 'Kids' ? "Charming and comfortable ceremonial wear, thoughtfully tailored for the youngest members of the family." :
+                     "A refined edit of ceremonial, everyday, and statement pieces selected for modern wardrobes."}
                 </p>
 
                 <div className="collection-tabs" role="tablist" aria-label={`${category} subcategories`}>

@@ -84,6 +84,8 @@ const ProfilePage = () => {
     const [deleteConfirmPassword, setDeleteConfirmPassword] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    const [emailNotif, setEmailNotif] = useState(true);
+    const [smsNotif, setSmsNotif] = useState(false);
 
     // UI State
     const [message, setMessage] = useState('');
@@ -446,7 +448,7 @@ return (
                                                     <p className="axm-address-name">{name}</p>
                                                     <p className="axm-address-lines">
                                                         {address.street || 'No street provided'}<br />
-                                                        {address.city ? `${address.city}, ${address.state}` : 'City, State'}<br />
+                                                        {address.city ? `${address.city}, ${address.state}` : 'City, State'} {address.zipCode || ''}<br />
                                                         {address.country || 'Country'}
                                                     </p>
                                                     <button onClick={() => setActiveTab('profile')} className="axm-btn-primary" style={{ marginTop: '1.5rem' }}>Edit Address</button>
@@ -565,7 +567,7 @@ return (
                                                 </div>
                                                 <div className="axm-form-group">
                                                     <label className="axm-form-label">Phone Number</label>
-                                                    <input type="text" className="axm-form-input" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                                                     <input type="text" className="axm-form-input" value={phone} onChange={(e) => setPhone(e.target.value)} />
                                                 </div>
                                             </div>
 
@@ -576,6 +578,10 @@ return (
                                             <div className="axm-form-grid">
                                                 <input type="text" className="axm-form-input" placeholder="City" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} />
                                                 <input type="text" className="axm-form-input" placeholder="State" value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} />
+                                            </div>
+                                            <div className="axm-form-grid" style={{ marginTop: '1rem' }}>
+                                                <input type="text" className="axm-form-input" placeholder="Zip / Postal Code" value={address.zipCode || ''} onChange={(e) => setAddress({ ...address, zipCode: e.target.value })} />
+                                                <input type="text" className="axm-form-input" placeholder="Country" value={address.country || ''} onChange={(e) => setAddress({ ...address, country: e.target.value })} />
                                             </div>
                                             
                                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
@@ -676,7 +682,30 @@ return (
                                             </form>
                                         </div>
 
-                                        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '2rem' }}>
+
+                                            <h3 className="axm-section-title" style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2rem' }}><FaBoxOpen color="var(--orange)" /> Notifications</h3>
+                                            
+                                            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <p className="axm-list-item-title">Email Notifications</p>
+                                                    <p className="axm-list-item-sub">Receive updates on orders and exclusive collections.</p>
+                                                </div>
+                                                <div onClick={() => setEmailNotif(!emailNotif)} style={{ width: '50px', height: '26px', background: emailNotif ? 'var(--orange)' : '#333', borderRadius: '20px', position: 'relative', cursor: 'pointer', transition: 'background 0.3s ease' }}>
+                                                    <div style={{ width: '20px', height: '20px', background: '#fff', borderRadius: '50%', position: 'absolute', top: '3px', left: emailNotif ? '27px' : '3px', transition: 'left 0.3s ease' }} />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <p className="axm-list-item-title">SMS Notifications</p>
+                                                    <p className="axm-list-item-sub">Get real-time tracking updates via text message.</p>
+                                                </div>
+                                                <div onClick={() => setSmsNotif(!smsNotif)} style={{ width: '50px', height: '26px', background: smsNotif ? 'var(--orange)' : '#333', borderRadius: '20px', position: 'relative', cursor: 'pointer', transition: 'background 0.3s ease' }}>
+                                                    <div style={{ width: '20px', height: '20px', background: '#fff', borderRadius: '50%', position: 'absolute', top: '3px', left: smsNotif ? '27px' : '3px', transition: 'left 0.3s ease' }} />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '2rem' }}>
                                             <h3 className="axm-section-title" style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '10px' }}><FaShieldAlt /> Danger Zone</h3>
                                             <p className="axm-section-desc" style={{ marginBottom: '1.5rem' }}>Permanently delete your account and all associated data.</p>
                                             <button onClick={() => setShowDeleteModal(true)} className="axm-btn-outline" style={{ color: '#EF4444', borderColor: 'rgba(239,68,68,0.3)' }}>
