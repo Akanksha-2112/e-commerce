@@ -407,31 +407,7 @@ const LuxuryCheckout = () => {
             })}
           </div>
 
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                style={{
-                  marginTop: 12,
-                  padding: '14px 18px',
-                  border: '1px solid #b91c1c',
-                  color: '#b91c1c',
-                  fontFamily: 'Montserrat, sans-serif',
-                  fontSize: '0.78rem',
-                  letterSpacing: '0.04em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                }}
-                data-testid="checkout-error"
-              >
-                <FaExclamationTriangle size={14} />
-                {error}
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           <div className="checkout-security">
             <FaLock size={12} color="#666" />
@@ -483,6 +459,32 @@ const LuxuryCheckout = () => {
             <div className="delivery-note">
               Complimentary white-glove delivery included.
             </div>
+
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  style={{
+                    marginBottom: 20,
+                    padding: '14px 18px',
+                    border: '1px solid #b91c1c',
+                    color: '#b91c1c',
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.04em',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                  }}
+                  data-testid="checkout-error"
+                >
+                  <FaExclamationTriangle size={14} />
+                  {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <button
               type="button"
