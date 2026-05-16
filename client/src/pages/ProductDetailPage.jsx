@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,6 +45,15 @@ const formatPrice = (price) =>
     currency: 'INR',
     maximumFractionDigits: 0,
   }).format(price ?? 0);
+
+// Fallback images by category so broken Cloudinary URLs never show a black box
+const FALLBACKS = [
+  'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&q=80',
+  'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=900&q=80',
+  'https://images.unsplash.com/photo-1614179689702-355944cd0918?w=900&q=80',
+  'https://images.unsplash.com/photo-1603400521630-9f2de124b33b?w=900&q=80',
+];
+const getFallback = (idx = 0) => FALLBACKS[idx % FALLBACKS.length];
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -232,10 +241,11 @@ const ProductDetailPage = () => {
             {images.map((img, i) => (
               <img
                 key={i}
-                src={img.url}
+                src={img.url || getFallback(i)}
                 alt={`${product.name} ${i + 1}`}
                 className={`pdl-thumb ${i === activeImage ? 'is-active' : ''}`}
                 onClick={() => setActiveImage(i)}
+                onError={e => { e.target.onerror = null; e.target.src = getFallback(i); }}
                 data-testid={`pdl-thumb-${i}`}
               />
             ))}
@@ -245,13 +255,14 @@ const ProductDetailPage = () => {
             <AnimatePresence mode="wait">
               <motion.img
                 key={activeImage}
-                src={images[activeImage]?.url}
+                src={images[activeImage]?.url || getFallback(activeImage)}
                 alt={product.name}
                 className="pdl-main-image"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
+                onError={e => { e.target.onerror = null; e.target.src = getFallback(activeImage); }}
                 data-testid="pdl-main-image"
               />
             </AnimatePresence>
@@ -485,11 +496,9 @@ const ProductDetailPage = () => {
               >
                 <div className="pdl-related-img-wrap">
                   <img
-                    src={
-                      p.images?.[0]?.url ||
-                      'https://placehold.co/600x800/0a0a0a/d4af37?text=AWIK'
-                    }
+                    src={p.images?.[0]?.url || getFallback(related.indexOf(p))}
                     alt={p.name}
+                    onError={e => { e.target.onerror = null; e.target.src = getFallback(related.indexOf(p)); }}
                   />
                 </div>
                 <div className="pdl-related-name">{p.name}</div>
