@@ -60,13 +60,7 @@ const LuxuryCheckout = () => {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    // If cart empties out (and we're not on the success screen or submitting) → bounce home
-    if (!success && !submitting && cartItems.length === 0) {
-      const t = setTimeout(() => navigate('/'), 600);
-      return () => clearTimeout(t);
-    }
-  }, [cartItems.length, success, submitting, navigate]);
+
 
   // ---------- Handlers ----------
   const handleChange = (e) => {
