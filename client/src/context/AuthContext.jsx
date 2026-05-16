@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
       if (userInfo) {
         const parsedUser = JSON.parse(userInfo);
         setUser(parsedUser);
+        setLoading(false); // unblock UI immediately with cached user data
 
         // Background refresh to get latest data and validate token
         try {
@@ -29,8 +30,9 @@ export const AuthProvider = ({ children }) => {
           console.error('Token invalid or expired', error);
           // Silent fail — let user continue with cached data or re-login manually
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
