@@ -102,9 +102,17 @@ const CartDrawer = () => {
                         <span>Shipping</span>
                         <span style={{ color: '#4caf50' }}>Complimentary</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontFamily: 'var(--font-sans)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontFamily: 'var(--font-sans)' }}>
                         <span>SUBTOTAL</span>
                         <span data-testid="cart-subtotal">{formatINR(subtotal)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#666', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+                        <span>Estimated Delivery</span>
+                        <span>
+                            {new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                            {' - '}
+                            {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </span>
                     </div>
                     <button
                         className="cart-checkout-btn"

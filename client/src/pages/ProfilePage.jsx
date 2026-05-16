@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useGlobal } from '../context/GlobalContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,6 +39,24 @@ const ProfilePage = () => {
     } = useContext(AuthContext);
 
     const navigate = useNavigate();
+
+    const { addToCart, toggleCart } = useGlobal();
+
+    const handleReorder = async (orderItems) => {
+        if (!orderItems || orderItems.length === 0) return;
+        for (const item of orderItems) {
+            await addToCart({
+                id: item.product,
+                name: item.name,
+                price: item.price,
+                image: item.image,
+                size: item.size || 'M',
+                color: item.color || 'Black'
+            }, item.qty || item.quantity || 1);
+        }
+        toggleCart(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const [activeTab, setActiveTab] = useState('dashboard');
     const [orders, setOrders] = useState([]);
@@ -356,7 +375,7 @@ return (
                                             {[
                                                 { title: 'Total Orders', value: stats?.totalOrders || 0 },
                                                 { title: 'Wishlist Items', value: stats?.wishlistCount || 0 },
-                                                { title: 'Total Spent', value: `₹${stats?.totalSpent || 0}` }
+                                                { title: 'Total Spent', value: `₹${(stats?.totalSpent || 0).toLocaleString('en-IN')}` }
                                             ].map((stat) => (
                                                 <div key={stat.title} className="axm-glass-panel">
                                                     <p className="axm-stat-label">{stat.title}</p>
@@ -471,6 +490,28 @@ return (
                                                             </span>
                                                         </div>
 
+                                                        {/* Visual Tracking UI */}
+                                                        <div style={{ padding: '1.5rem 1.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.07)', paddingBottom: '1.5rem' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
+                                                                <div style={{ position: 'absolute', top: '50%', left: '10%', right: '10%', height: '2px', background: 'rgba(255,255,255,0.1)', zIndex: 0, transform: 'translateY(-50%)' }}>
+                                                                    <div style={{ width: order.isDelivered ? '100%' : '50%', height: '100%', background: '#C9A84C', transition: 'width 0.5s ease' }}></div>
+                                                                </div>
+                                                                
+                                                                {['Placed', 'Processing', 'Shipped', 'Delivered'].map((step, idx) => {
+                                                                    let active = false;
+                                                                    if (order.isDelivered) active = true;
+                                                                    else if (idx <= 1) active = true; // Mock 'Processing' state
+                                                                    
+                                                                    return (
+                                                                        <div key={step} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', zIndex: 1 }}>
+                                                                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: active ? '#C9A84C' : '#333', border: `2px solid ${active ? '#C9A84C' : '#111'}` }}></div>
+                                                                            <span style={{ fontFamily: 'var(--sans)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? '#e8e8e8' : '#666' }}>{step}</span>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+
                                                         {/* Order items */}
                                                         <div style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                                             {(order.orderItems || []).map((item, idx) => (
@@ -492,6 +533,14 @@ return (
                                                             {(!order.orderItems || order.orderItems.length === 0) && (
                                                                 <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '0.85rem', textAlign: 'center', padding: '0.5rem 0' }}>No item details available.</p>
                                                             )}
+                                                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                                                                <button 
+                                                                    onClick={() => handleReorder(order.orderItems)}
+                                                                    style={{ background: 'transparent', border: '1px solid #C9A84C', color: '#C9A84C', padding: '0.4rem 1rem', fontFamily: 'var(--sans)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}
+                                                                >
+                                                                    Buy Again
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}

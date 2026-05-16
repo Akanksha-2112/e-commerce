@@ -32,8 +32,6 @@ const LuxuryCheckout = () => {
     [cartItems]
   );
   const shippingPrice = 0; // complimentary white-glove
-  const taxPrice = Math.round(subtotal * 0.18); // 18% GST
-  const totalPrice = subtotal + shippingPrice + taxPrice;
 
   // ---------- Form state ----------
   const splitName = (user?.name || '').split(' ');
@@ -53,6 +51,14 @@ const LuxuryCheckout = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(null); // { orderId } on success
 
+  // ---------- Promo Code State ----------
+  const [promoInput, setPromoInput] = useState('');
+  const [promoApplied, setPromoApplied] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
+
+  const taxPrice = Math.round(subtotal * 0.18); // 18% GST
+  const totalPrice = subtotal + shippingPrice + taxPrice - discountAmount;
+
   // ---------- Guards ----------
   useEffect(() => {
     if (!user) {
@@ -60,8 +66,21 @@ const LuxuryCheckout = () => {
     }
   }, [user, navigate]);
 
-
-
+  // Handle promo code logic
+  const handleApplyPromo = () => {
+    if (!promoInput.trim()) return;
+    
+    // Mock promo logic (e.g. AWIK10 gives 10% off subtotal)
+    const code = promoInput.trim().toUpperCase();
+    if (code === 'AWIK10') {
+      const discount = Number((subtotal * 0.1).toFixed(2));
+      setDiscountAmount(discount);
+      setPromoApplied('AWIK10');
+      setError('');
+    } else {
+      setError('Invalid or expired promotional code.');
+    }
+  };
   // ---------- Handlers ----------
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +130,7 @@ const LuxuryCheckout = () => {
       itemsPrice: subtotal,
       shippingPrice,
       taxPrice,
+      discount: discountAmount,
       totalPrice,
     };
 
@@ -469,6 +489,33 @@ const LuxuryCheckout = () => {
               <span>GST (18%)</span>
               <span>{formatINR(taxPrice)}</span>
             </div>
+            
+            {/* Promo Code Input */}
+            <div style={{ display: 'flex', gap: 8, marginTop: 16, marginBottom: 16 }}>
+              <input 
+                type="text" 
+                value={promoInput} 
+                onChange={e => setPromoInput(e.target.value)} 
+                placeholder="PROMO CODE" 
+                disabled={!!promoApplied}
+                style={{ flex: 1, padding: '0.6rem 1rem', background: 'transparent', border: '1px solid #e0e0e0', fontFamily: 'Montserrat, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}
+              />
+              <button 
+                type="button" 
+                onClick={promoApplied ? () => { setPromoApplied(''); setDiscountAmount(0); setPromoInput(''); } : handleApplyPromo}
+                style={{ padding: '0 1rem', background: promoApplied ? '#f2f2f2' : '#1a1a1a', color: promoApplied ? '#1a1a1a' : '#fff', border: 'none', fontFamily: 'Montserrat, sans-serif', fontSize: '0.7rem', letterSpacing: '0.1em', cursor: 'pointer' }}
+              >
+                {promoApplied ? 'REMOVE' : 'APPLY'}
+              </button>
+            </div>
+
+            {promoApplied && (
+              <div className="summary-row" style={{ color: '#C9A84C', fontWeight: 600 }}>
+                <span>Discount ({promoApplied})</span>
+                <span>-{formatINR(discountAmount)}</span>
+              </div>
+            )}
+
             <div className="summary-total">
               <span>Total</span>
               <span data-testid="checkout-total">{formatINR(totalPrice)}</span>

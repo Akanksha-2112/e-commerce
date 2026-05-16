@@ -10,6 +10,8 @@ import {
   FaUndo,
   FaShieldAlt,
   FaArrowLeft,
+  FaShareAlt,
+  FaStar,
 } from 'react-icons/fa';
 
 import { AuthContext } from '../context/AuthContext';
@@ -171,6 +173,14 @@ const ProductDetailPage = () => {
       price: product.price,
       image: product.images?.[0]?.url,
     });
+  };
+
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setToast('Link copied to clipboard');
+      setTimeout(() => setToast(''), 3000);
+    }
   };
 
   // ---------- Loading / Error states ----------
@@ -368,7 +378,15 @@ const ProductDetailPage = () => {
               data-testid="pdl-wishlist-btn"
               style={isWishlisted ? { borderColor: '#C9A84C', color: '#C9A84C' } : {}}
             >
-              {isWishlisted ? '♥ Saved to Wishlist' : '♡ Add to Wishlist'}
+              {isWishlisted ? '♥ Saved' : '♡ Add to Wishlist'}
+            </button>
+            <button
+              className="pdl-btn pdl-btn-secondary"
+              onClick={handleShare}
+              title="Share this piece"
+              style={{ padding: '0 1.2rem', minWidth: 'auto', flex: '0 0 auto' }}
+            >
+              <FaShareAlt size={16} />
             </button>
             <button
               className="pdl-btn pdl-btn-primary"
@@ -474,6 +492,43 @@ const ProductDetailPage = () => {
             </div>
           );
         })}
+      </section>
+
+      {/* Reviews & Ratings (Mock) */}
+      <section className="pdl-reviews" style={{ padding: '4rem 5vw', maxWidth: '1400px', margin: '0 auto', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', color: '#f8f4ee', margin: 0, fontWeight: 300 }}>Client Testimonials</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: '0.8rem' }}>
+              <div style={{ display: 'flex', color: '#C9A84C', fontSize: '1.1rem' }}>
+                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar style={{ opacity: 0.5 }} />
+              </div>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#999', letterSpacing: '0.05em' }}>4.8 / 5 based on 24 reviews</span>
+            </div>
+          </div>
+          <button style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: '#e8e8e8', padding: '0.6rem 1.2rem', fontFamily: 'var(--font-sans)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'border-color 0.2s' }}>
+            Write a Review
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {[
+            { name: 'Priya M.', date: 'October 12, 2025', title: 'Exquisite Craftsmanship', text: 'The attention to detail on this piece is unparalleled. The fabric drapes beautifully and feels incredibly luxurious. Highly recommend the bespoke sizing.' },
+            { name: 'Ananya S.', date: 'September 28, 2025', title: 'A Timeless Addition', text: 'I wore this to a formal gala and received endless compliments. It arrived perfectly packaged, reflecting the true essence of a luxury maison.' },
+            { name: 'Rohan K.', date: 'August 04, 2025', title: 'Impeccable Service', text: 'Beyond the garment itself, the concierge service was phenomenal. They ensured it arrived in time for my event.' }
+          ].map((review, i) => (
+            <div key={i} style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ display: 'flex', color: '#C9A84C', fontSize: '0.8rem', marginBottom: '1rem' }}>
+                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+              </div>
+              <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', color: '#e8e8e8', margin: '0 0 0.5rem' }}>"{review.title}"</h4>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: '#aaa', lineHeight: 1.6, margin: '0 0 1.5rem' }}>{review.text}</p>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.7rem', color: '#666', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                <span style={{ color: '#e8e8e8', fontWeight: 600 }}>{review.name}</span> — Verified Buyer <br/> {review.date}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Related */}
