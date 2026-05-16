@@ -103,7 +103,7 @@ const ProfilePage = () => {
             setLoadingOrders(true);
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             const { data } = await axios.get(`${API_BASE}/api/orders`, config);
-            setOrders(data);
+            setOrders(Array.isArray(data) ? data : (Array.isArray(data?.orders) ? data.orders : []));
             setLoadingOrders(false);
         } catch (err) {
             console.error(err);
@@ -123,14 +123,14 @@ const ProfilePage = () => {
     const fetchWishlistData = async () => {
         const result = await getWishlist();
         if (result.success) {
-            setWishlist(result.data);
+            setWishlist(Array.isArray(result.data) ? result.data : []);
         }
     };
 
     const fetchRecentlyViewedData = async () => {
         const result = await getRecentlyViewed();
         if (result.success) {
-            setRecentlyViewed(result.data);
+            setRecentlyViewed(Array.isArray(result.data) ? result.data : []);
         }
     };
 
@@ -240,7 +240,7 @@ const ProfilePage = () => {
     const handleRemoveFromWishlist = async (productId) => {
         const result = await removeFromWishlist(productId);
         if (result.success) {
-            setWishlist(wishlist.filter(item => item._id !== productId));
+            setWishlist((currentWishlist) => (Array.isArray(currentWishlist) ? currentWishlist : []).filter(item => item._id !== productId));
             setMessage('Removed from wishlist');
             setTimeout(() => setMessage(''), 2000);
         } else {
@@ -252,6 +252,10 @@ const ProfilePage = () => {
     
     
     
+    const safeOrders = Array.isArray(orders) ? orders : [];
+    const safeWishlist = Array.isArray(wishlist) ? wishlist : [];
+    const safeRecentlyViewed = Array.isArray(recentlyViewed) ? recentlyViewed : [];
+
 return (
         <>
             {showDeleteModal && (
@@ -383,7 +387,7 @@ return (
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {orders.slice(0, 3).map((order) => (
+                                                        {safeOrders.slice(0, 3).map((order) => (
                                                             <tr key={order._id} className="axm-tr-row">
                                                                 <td>#{order._id.substring(order._id.length - 6)}</td>
                                                                 <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
@@ -395,7 +399,7 @@ return (
                                                                 <td>₹{order.totalPrice}</td>
                                                             </tr>
                                                         ))}
-                                                        {orders.length === 0 && (
+                                                        {safeOrders.length === 0 && (
                                                             <tr>
                                                                 <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>No orders found.</td>
                                                             </tr>
@@ -413,7 +417,7 @@ return (
                                                     <button onClick={() => setActiveTab('wishlist')} className="axm-btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.65rem' }}>See All</button>
                                                 </div>
                                                 <div style={{ marginTop: '1rem' }}>
-                                                    {wishlist.slice(0, 3).map((item) => (
+                                                    {safeWishlist.slice(0, 3).map((item) => (
                                                         <div key={item._id} className="axm-list-item">
                                                             <div>
                                                                 <p className="axm-list-item-title">{item.name}</p>
@@ -422,7 +426,7 @@ return (
                                                             <span className="axm-list-item-price">₹{item.price}</span>
                                                         </div>
                                                     ))}
-                                                    {wishlist.length === 0 && <p className="axm-section-desc">Your wishlist is empty.</p>}
+                                                    {safeWishlist.length === 0 && <p className="axm-section-desc">Your wishlist is empty.</p>}
                                                 </div>
                                             </div>
 
@@ -457,7 +461,7 @@ return (
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {orders.map((order) => (
+                                                    {safeOrders.map((order) => (
                                                         <tr key={order._id} className="axm-tr-row">
                                                             <td>#{order._id.substring(order._id.length - 6)}</td>
                                                             <td style={{ color: 'var(--muted)' }}>{new Date(order.createdAt).toLocaleDateString()}</td>
@@ -469,7 +473,7 @@ return (
                                                             <td>₹{order.totalPrice}</td>
                                                         </tr>
                                                     ))}
-                                                    {orders.length === 0 && (
+                                                    {safeOrders.length === 0 && (
                                                         <tr>
                                                             <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>No orders found.</td>
                                                         </tr>
@@ -520,7 +524,7 @@ return (
                                 {activeTab === 'wishlist' && (
                                     <motion.div key="wishlist" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="axm-glass-panel">
                                         <h2 className="axm-section-title" style={{ marginBottom: '1.5rem' }}>My Wishlist</h2>
-                                        {wishlist.length === 0 ? (
+                                        {safeWishlist.length === 0 ? (
                                             <div className="axm-empty-state">
                                                 <FaHeart className="axm-empty-icon" />
                                                 <p>Your wishlist is empty.</p>
@@ -528,7 +532,7 @@ return (
                                             </div>
                                         ) : (
                                             <div className="axm-split-grid">
-                                                {wishlist.map(item => (
+                                                {safeWishlist.map(item => (
                                                     <div key={item._id} className="axm-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
                                                         <div style={{ display: 'flex', gap: '1rem', width: '100%', alignItems: 'center' }}>
                                                             <img src={item.images?.[0]?.url || 'https://via.placeholder.com/100'} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem' }} />
@@ -552,14 +556,14 @@ return (
                                 {activeTab === 'recentlyViewed' && (
                                     <motion.div key="recentlyViewed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="axm-glass-panel">
                                         <h2 className="axm-section-title" style={{ marginBottom: '1.5rem' }}>Recently Viewed</h2>
-                                        {recentlyViewed.length === 0 ? (
+                                        {safeRecentlyViewed.length === 0 ? (
                                             <div className="axm-empty-state">
                                                 <FaHistory className="axm-empty-icon" />
                                                 <p>No recently viewed products.</p>
                                             </div>
                                         ) : (
                                             <div className="axm-split-grid">
-                                                {recentlyViewed.map(item => (
+                                                {safeRecentlyViewed.map(item => (
                                                     <div key={item._id} className="axm-list-item" onClick={() => navigate(`/product/${item._id}`)} style={{ cursor: 'pointer', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
                                                         <div style={{ display: 'flex', gap: '1rem', width: '100%', alignItems: 'center' }}>
                                                             <img src={item.images?.[0]?.url || 'https://via.placeholder.com/100'} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem' }} />
